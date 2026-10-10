@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitGuru — On-Device AI Workout Coach</title>
+  <meta name="description" content="FitGuru is a privacy-first, on-device AI workout coach. Real-time pose tracking, wearable biometrics, Gemini recovery reports, and ElevenLabs voice coaching — with zero cloud video.">
+  <meta name="theme-color" content="#EFEAE2">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="nav-wrap">
+      <a class="brand" href="#top" aria-label="FitGuru home">
+        <span class="brand-mark"><img src="assets/logo.png" alt="FitGuru" width="44" height="44"></span>
+        <span class="brand-copy">
+          <strong>FitGuru</strong>
+          <small>On-Device AI Coach</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="#product">Floor</a>
+        <a href="#analysis">Form</a>
+        <a href="#coaches">Coaches</a>
+        <a href="#pricing">Membership</a>
+        <a href="#download">Apps</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-ghost" type="button" id="contrastBtn" aria-pressed="false">Contrast</button>
+        <a class="btn btn-mint" href="#download">Join the floor</a>
+        <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="hero-media">
+          <video id="heroVideo" autoplay muted loop playsinline preload="auto">
+            <source src="assets/video1.mp4" type="video/mp4">
+            Your browser does not support embedded video.
+          </video>
+        </div>
+        <div class="hero-copy">
+          <p class="kicker">Open floor · Camera on · Cloud off</p>
+          <h1>Train without barriers.</h1>
+          <p class="lede">A private coach for real gyms. On-device pose, live heart rate, and a voice in your ear — no video leaves the phone.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-mint btn-lg" href="#download">Download the apps</a>
+            <a class="btn btn-outline btn-lg" href="#analysis">Watch a set</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Gym floor numbers">
+      <div class="stats-row">
+        <div><strong>33</strong><span>skeletal points</span></div>
+        <div><strong>30+</strong><span>FPS on device</span></div>
+        <div><strong>12</strong><span>tracked lifts</span></div>
+        <div><strong>20</strong><span>machine guides</span></div>
+        <div><strong>0</strong><span>cloud video</span></div>
+      </div>
+    </section>
+
+    <section class="product band-dark" id="product">
+      <div class="media-split">
+        <div class="media-copy">
+          <p class="kicker">On the rack</p>
+          <h2>The coach that lives on your phone.</h2>
+          <p>Dashboard, catalog, streaks, and live skeletal coaching — the actual FitGuru floor, not a concept render.</p>
+          <ul class="plain-list">
+            <li>Activity dashboard</li>
+            <li>AI exercise catalog</li>
+            <li>Streak + rest timer</li>
+            <li>Live pose overlay</li>
+          </ul>
+        </div>
+        <div class="stage-3d">
+          <img src="assets/IMG1.png" alt="FitGuru on four floating phones: activity dashboard, AI exercise catalog, streak and rest timer, and live pose coaching" class="hero-ui">
+        </div>
+      </div>
+      <div class="ui-grid" id="uiGrid" hidden>
+        <figure class="optional-shot" hidden>
+          <img src="assets/IMG2.png" alt="Additional FitGuru interface" onerror="this.closest('figure').remove()">
+          <figcaption>Interface detail</figcaption>
+        </figure>
+        <figure class="optional-shot" hidden>
+          <img src="assets/IMG3.png" alt="Additional FitGuru interface" onerror="this.closest('figure').remove()">
+          <figcaption>Interface detail</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="analysis" id="analysis">
+      <div class="media-split media-split-reverse">
+        <div class="media-copy">
+          <p class="kicker">Live form</p>
+          <h2>See the skeleton. Hear the cue. Fix the rep.</h2>
+          <p>Joint landmarks and angle math on a live camera feed. The count stays on you when someone walks behind the rack.</p>
+          <ul class="plain-list">
+            <li>MediaPipe / Apple Vision</li>
+            <li>Zero cloud video</li>
+            <li>Rep + form overlay</li>
+          </ul>
+        </div>
+        <div class="video-shell">
+          <video id="analysisVideo" autoplay muted loop playsinline controls preload="auto">
+            <source src="assets/video2.mp4" type="video/mp4">
+            Your browser does not support embedded video.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="section-head left">
+        <p class="kicker">On the floor</p>
+        <h2>A full coaching stack, not a rep counter.</h2>
+      </div>
+      <div class="feature-grid">
+        <article><span>01</span><h3>Form coaching</h3><p>33 landmarks on Android, 19 on iOS, fused with live heart rate from Galaxy Watch / Wear OS.</p></article>
+        <article><span>02</span><h3>Rep counting</h3><p>Joint-angle state machines count every completed rep. No tap required.</p></article>
+        <article><span>03</span><h3>Crowd shield</h3><p>Stays locked on you when someone walks behind the rack. 1.5s occlusion window.</p></article>
+        <article><span>04</span><h3>Voice coaches</h3><p>Marcus, Maya, Alex, Sarah — studio voices with instant offline TTS fallback.</p></article>
+        <article><span>05</span><h3>Recovery notes</h3><p>Gemini reads the set, names the fault, and writes three cues plus a recovery window.</p></article>
+        <article><span>06</span><h3>Machine catalog</h3><p>Twenty pieces of iron: setup, cues, and the mistakes that wreck a joint.</p></article>
+        <article><span>07</span><h3>Streak diary</h3><p>Daily challenges and weekly logs stored on the phone. No account.</p></article>
+        <article><span>08</span><h3>Airplane mode</h3><p>Camera frames never leave the Neural Engine. Counting still works offline.</p></article>
+      </div>
+    </section>
+
+    <section class="how band-dark" id="how">
+      <div class="section-head left">
+        <p class="kicker">Session flow</p>
+        <h2>Reflex first. Cognition after the set.</h2>
+      </div>
+      <ol class="steps">
+        <li><span>01</span><h3>See</h3><p>Camera pulls skeletal points at 30–60 FPS on-device.</p></li>
+        <li><span>02</span><h3>Fuse</h3><p>Angles sync with heart rate, cadence, and calories.</p></li>
+        <li><span>03</span><h3>Coach</h3><p>Sub-50ms cues fire while you are still in the hole.</p></li>
+        <li><span>04</span><h3>Recover</h3><p>Gemini turns the set into a spoken debrief.</p></li>
+      </ol>
+    </section>
+
+    <section class="coaches" id="coaches">
+      <div class="section-head left">
+        <p class="kicker">Voice booth</p>
+        <h2>Pick the coach for the session.</h2>
+      </div>
+      <div class="coach-grid">
+        <article><p class="tag">Heavy day</p><h3>Marcus</h3><p>Short commands. Tempo pressure. No chatter on compounds.</p></article>
+        <article><p class="tag">Mobility</p><h3>Maya</h3><p>Breath, brace, alignment. First squats and rehab days.</p></article>
+        <article><p class="tag">Meet week</p><h3>Alex</h3><p>Olympian pacing. Overload language, then restraint.</p></article>
+        <article><p class="tag">Clinic</p><h3>Sarah</h3><p>Names the joint, the fault, and the exact cue.</p></article>
+      </div>
+    </section>
+
+    <section class="exercises band-dark" id="exercises">
+      <div class="split">
+        <div>
+          <p class="kicker">Movement board</p>
+          <h2>Twelve lifts. Twenty machines.</h2>
+          <p>Tracking covers the lifts that injure people when form slips. The catalog covers the floor around them.</p>
+        </div>
+        <ul class="board">
+          <li>Barbell squat</li>
+          <li>Deadlift</li>
+          <li>Push-up</li>
+          <li>Bench press</li>
+          <li>Overhead press</li>
+          <li>Pull-up / chin-up</li>
+          <li>Dumbbell lunge</li>
+          <li>Bicep curl</li>
+          <li>Plank hold</li>
+          <li>Leg press</li>
+          <li>Lat pulldown</li>
+          <li>Running cadence</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="compare" id="compare">
+      <div class="section-head left">
+        <p class="kicker">Why this floor</p>
+        <h2>Built for crowded gyms, not empty living rooms.</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Generic fitness apps</th>
+              <th>Cloud video AI</th>
+              <th>FitGuru</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Real-time joint coaching</td>
+              <td>No</td>
+              <td>Yes, delayed</td>
+              <td>Yes, on-device</td>
+            </tr>
+            <tr>
+              <td>Raw video leaves the phone</td>
+              <td>Sometimes</td>
+              <td>Always</td>
+              <td>Never</td>
+            </tr>
+            <tr>
+              <td>Works when someone walks behind you</td>
+              <td>—</td>
+              <td>Often jumps target</td>
+              <td>Gym multi-person shield</td>
+            </tr>
+            <tr>
+              <td>Wearable heart-rate fusion</td>
+              <td>Logs only</td>
+              <td>Rare</td>
+              <td>Live with form</td>
+            </tr>
+            <tr>
+              <td>Studio voice + offline fallback</td>
+              <td>Beeps</td>
+              <td>Cloud only</td>
+              <td>ElevenLabs + native TTS</td>
+            </tr>
+            <tr>
+              <td>Post-set recovery diagnosis</td>
+              <td>Generic tips</td>
+              <td>Video upload required</td>
+              <td>Gemini on numeric telemetry</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+      <div class="section-head left">
+        <p class="kicker">Membership</p>
+        <h2>Silver. Gold. Platinum.</h2>
+        <p>Start free on the floor. Unlock studio voices and recovery notes when the work gets serious.</p>
+        <div class="bill-toggle" role="group" aria-label="Billing period">
+          <button type="button" class="is-active" data-bill="monthly">Monthly</button>
+          <button type="button" data-bill="annual">Annual · 2 months free</button>
+        </div>
+      </div>
+      <div class="price-grid">
+        <article class="plan">
+          <p class="plan-tier">Silver</p>
+          <h3>Starter</h3>
+          <p class="price" data-monthly="₹0" data-annual="₹0"><span>₹0</span><small>/ month</small></p>
+          <p class="plan-note">Forever free · no account</p>
+          <ul>
+            <li>On-device pose tracking</li>
+            <li>Squats, push-ups, lunges</li>
+            <li>Automatic rep counting</li>
+            <li>Native voice cues</li>
+            <li>Local workout history</li>
+            <li>Login-free personalization</li>
+          </ul>
+          <a class="btn btn-outline" href="#download">Start on Silver</a>
+        </article>
+        <article class="plan plan-featured">
+          <p class="plan-badge">Most popular</p>
+          <p class="plan-tier">Gold</p>
+          <h3>Athlete</h3>
+          <p class="price" data-monthly="₹499" data-annual="₹415"><span>₹499</span><small>/ month</small></p>
+          <p class="plan-note">Billed monthly, or ₹4,990 / year</p>
+          <ul>
+            <li>Everything in Silver</li>
+            <li>12 tracked lifts</li>
+            <li>ElevenLabs coach personas</li>
+            <li>Gemini form + recovery reports</li>
+            <li>Galaxy Watch / Wear OS heart rate</li>
+            <li>20-machine gym catalog</li>
+            <li>Streak calendar &amp; weekly goals</li>
+          </ul>
+          <a class="btn btn-mint" href="#download">Choose Gold</a>
+        </article>
+        <article class="plan">
+          <p class="plan-tier">Platinum</p>
+          <h3>Performance</h3>
+          <p class="price" data-monthly="₹999" data-annual="₹832"><span>₹999</span><small>/ month</small></p>
+          <p class="plan-note">Billed monthly, or ₹9,990 / year</p>
+          <ul>
+            <li>Everything in Gold</li>
+            <li>All four studio voice personas</li>
+            <li>Unlimited Gemini debriefs</li>
+            <li>Progressive overload plans</li>
+            <li>Priority gym-shield tracking</li>
+            <li>3 family / team seats</li>
+            <li>Priority coach support</li>
+          </ul>
+          <a class="btn btn-outline" href="#download">Go Platinum</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="download" id="download">
+      <div class="section-head left">
+        <p class="kicker">Locker</p>
+        <h2>Android and iPhone. Ready to install.</h2>
+        <p>Direct builds. Camera on. No store wait.</p>
+      </div>
+      <div class="download-grid">
+        <article class="dl-card">
+          <div class="dl-os">Android</div>
+          <h3>FitGuru for Android</h3>
+          <p>Pre-built Innovhacks 4.0 APK. Android 10+ with camera. Optional Galaxy Watch / Wear OS for live heart rate.</p>
+          <ul>
+            <li>API 29 minimum · API 34 recommended</li>
+            <li>MediaPipe on-device pose</li>
+            <li>Room history database</li>
+          </ul>
+          <a class="btn btn-mint btn-lg" href="/download-android" download="FitGuru-Android.apk">Download APK</a>
+        </article>
+        <article class="dl-card">
+          <div class="dl-os">iOS</div>
+          <h3>FitGuru for iPhone</h3>
+          <p>Native SwiftUI coach with Apple Vision on the Neural Engine. iOS 17+ with camera. Sideload the iOS package or run from Xcode.</p>
+          <ul>
+            <li>iOS 17.0 or newer</li>
+            <li>Apple Vision body pose</li>
+            <li>ElevenLabs + AVSpeech fallback</li>
+          </ul>
+          <a class="btn btn-outline btn-lg" id="iosDownload" href="/download-ios">Download iOS build</a>
+        </article>
+      </div>
+      <p class="dl-footnote">This landing page does not modify the native apps. Android package: <code>downloads/FitGuru-Android.apk</code>. Place <code>FitGuru-iOS.ipa</code> in the same folder to activate the iOS button.</p>
+    </section>
+
+    <section class="faq" id="faq">
+      <div class="section-head left">
+        <p class="kicker">Desk</p>
+        <h2>Straight answers before you train.</h2>
+      </div>
+      <div class="faq-list">
+        <details open>
+          <summary>Does any workout video go to the cloud?</summary>
+          <p>No. Pose estimation runs on the phone. Gemini only receives anonymous numeric telemetry — reps, angles, and heart-rate averages — never frames or photos.</p>
+        </details>
+        <details>
+          <summary>Will it lose me when the gym is crowded?</summary>
+          <p>FitGuru scores torso prominence, isolates faint bystanders, and freezes rep state for about 1.5 seconds if someone crosses the frame so the count does not jump bodies.</p>
+        </details>
+        <details>
+          <summary>What if I am offline?</summary>
+          <p>Rep counting, form math, and native TTS keep working. ElevenLabs and Gemini pause until you are back on a network, then the next debrief resumes.</p>
+        </details>
+        <details>
+          <summary>Do I need a Galaxy Watch?</summary>
+          <p>No. Vision coaching stands alone. Wearables add live heart rate, calories, and zone context for Gold and Platinum plans.</p>
+        </details>
+        <details>
+          <summary>Is there a login?</summary>
+          <p>No account is required. Android can greet you from the device contact name. History stays in on-device storage.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="cta-card">
+        <p class="kicker">Innovhacks 4.0</p>
+        <h2>Your coach is already in the bag.</h2>
+        <p>Point the camera at the platform. Get the cue. Stream nothing.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-mint btn-lg" href="#download">Download the apps</a>
+          <a class="btn btn-outline btn-lg" href="#pricing">See membership</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">
+      <a class="brand" href="#top">
+        <span class="brand-mark"><img src="assets/logo.png" alt="FitGuru" width="44" height="44"></span>
+        <span class="brand-copy">
+          <strong>FitGuru</strong>
+          <small>Where form meets privacy</small>
+        </span>
+      </a>
+      <p>On-device, multi-modal AI workout coaching for Android, iOS, and wearable sensors. Built for Innovhacks 4.0.</p>
+      <form class="newsletter" id="newsletter">
+        <label for="email">Product notes</label>
+        <div>
+          <input id="email" name="email" type="email" required placeholder="you@gym.com" autocomplete="email">
+          <button class="btn btn-mint" type="submit">Join</button>
+        </div>
+        <p class="form-status" id="formStatus" role="status"></p>
+      </form>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#analysis">Live analysis</a>
+        <a href="#pricing">Silver / Gold / Platinum</a>
+        <a href="#download">Downloads</a>
+      </div>
+      <div>
+        <h4>Platforms</h4>
+        <a href="/download-android">Android APK</a>
+        <a href="/download-ios">iOS build</a>
+        <a href="#product">Mobile UI</a>
+        <span>Wear OS / Galaxy Watch</span>
+        <span>Web companion (separate app)</span>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <span>Team FitGuru</span>
+        <span>Atharva Chaudhari — Lead</span>
+        <span>Innovhacks 4.0</span>
+        <span>SRM · Astro Bugs lineage</span>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="terms.html#cookies">Cookies</a>
+        <span>No cloud video by design</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 FitGuru. All rights reserved. On-device AI coach · Innovhacks 4.0 submission.</p>
+      <p>MediaPipe · Gemini · ElevenLabs · Samsung Health · Apple Vision are marks of their owners.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="js/main.js"></script>
+</body>
+</html>

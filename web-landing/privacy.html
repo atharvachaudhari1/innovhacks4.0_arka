@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy — FitGuru</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="assets/logo.png" alt="FitGuru" width="44" height="44"></span>
+        <span class="brand-copy"><strong>FitGuru</strong><small>Privacy</small></span>
+      </a>
+      <div class="nav-actions">
+        <a class="btn btn-mint" href="index.html">Back to site</a>
+      </div>
+    </div>
+  </header>
+  <main class="legal-page">
+    <p class="eyebrow">Legal</p>
+    <h1>Privacy policy</h1>
+    <p>FitGuru is designed so workout video never leaves the device. This page describes what that means in practice.</p>
+    <h2>Camera and pose data</h2>
+    <p>Live camera frames are processed on-device by MediaPipe Pose (Android) or Apple Vision (iOS). Skeletal landmarks are computed locally. FitGuru does not upload workout video, photos, or raw landmark streams to a FitGuru server.</p>
+    <h2>Generative coaching</h2>
+    <p>Optional Gemini reports receive anonymous numeric session summaries only — exercise type, rep counts, form scores, and similar telemetry. They do not include your face, voice recording of the room, or camera frames.</p>
+    <h2>Voice synthesis</h2>
+    <p>ElevenLabs is used only to speak coaching text you already generated in-app. If the network is unavailable, native on-device text-to-speech is used instead.</p>
+    <h2>Wearables</h2>
+    <p>Heart rate and calorie data stay on the paired phone unless you explicitly enable a cloud feature in a future release. The current product reads Samsung Health / Wear OS locally.</p>
+    <h2>Accounts</h2>
+    <p>FitGuru does not require an account. History is stored in on-device databases (Room on Android, sandboxed storage on iOS).</p>
+    <h2>This website</h2>
+    <p>The landing page is a static marketing site. The optional newsletter field is stored only in your browser session for this demo and is not sent to a backend.</p>
+    <p><a href="index.html">Return to FitGuru</a></p>
+  </main>
+</body>
+</html>
