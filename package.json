@@ -5,6 +5,7 @@
   "main": "web-companion/server.js",
   "scripts": {
     "start": "node web-companion/server.js",
+    "start:companion": "node web-companion/server.js",
     "test": "node -e \"console.log('FitGuru test suite passed')\""
   },
   "keywords": [

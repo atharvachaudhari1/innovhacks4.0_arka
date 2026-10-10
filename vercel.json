@@ -2,6 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "echo skip",
-  "buildCommand": "echo skip",
-  "outputDirectory": "web-landing"
+  "buildCommand": "mkdir -p .vercel/output/static && cp -R web-landing/. .vercel/output/static/ && printf '{\"version\":3}\\n' > .vercel/output/config.json"
 }
