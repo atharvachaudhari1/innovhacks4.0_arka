@@ -1,0 +1,43 @@
+# Gradle & build outputs
+.gradle/
+build/
+*/build/
+# *.apk
+!apk/*.apk
+web-companion/public/downloads/
+
+# Android Studio
+.idea/
+*.iml
+
+# Local configuration
+local.properties
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MediaPipe model is included (8.96 MB)
+# app/src/main/assets/*.task
+
+app/src/main/jniLibs/arm64-v8a/
+app/src/main/jniLibs/armeabi-v7a/
+
+# iOS & Xcode
+ios/build/
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+DerivedData/
+
+# Environment variables & Secrets
+.env
+*.env
+ios/FitGuru/Secrets.swift
+ios/FitGuru/Secrets.plist
+Secrets.plist
+
+
