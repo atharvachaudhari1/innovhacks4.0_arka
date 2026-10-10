@@ -47,6 +47,116 @@ struct ContentView: View {
         .sheet(isPresented: $store.isShowingGoalsEditor) {
             GoalEditorSheet(store: store)
         }
+        
+        // MARK: - Siri App Intent Receivers
+        // Route Siri commands → WorkoutStore via NotificationCenter bridge
+        .onReceive(NotificationCenter.default.publisher(for: SiriCommandBridge.startExerciseNotification)) { notification in
+            if let rawValue = notification.userInfo?["exercise"] as? String,
+               let exerciseType = ExerciseType(rawValue: rawValue) {
+                store.requestFinishActiveWorkout = false
+                store.activeWorkoutType = exerciseType
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: SiriCommandBridge.finishSetNotification)) { _ in
+            store.requestFinishActiveWorkout = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: SiriCommandBridge.startRestNotification)) { notification in
+            let duration = notification.userInfo?["duration"] as? Int ?? 60
+            store.startSmartRest(duration: duration)
+            store.isShowingRestTimer = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: SiriCommandBridge.formCheckNotification)) { _ in
+            store.voiceFeedbackMessage = "Form Check requested via Siri"
+            if let lastSession = store.sessions.first {
+                VoiceCommandManager.shared.speakFeedback(
+                    "Your last set of \(lastSession.exerciseName) scored \(lastSession.score)% form accuracy with \(lastSession.reps) reps."
+                )
+            }
+        }
+        
+        // MARK: - Custom URL Scheme Handler (fitguru://...)
+        .onOpenURL { url in
+            handleSiriURL(url)
+        }
+        
+        // MARK: - App Foreground / Active State Check for Pending Siri Actions
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            checkPendingSiriActions()
+        }
+        .onAppear {
+            checkPendingSiriActions()
+        }
+    }
+    
+    private func handleSiriURL(_ url: URL) {
+        guard url.scheme == "fitguru" else { return }
+        let host = url.host ?? url.path.replacingOccurrences(of: "/", with: "")
+        
+        switch host {
+        case "finish-set":
+            store.requestFinishActiveWorkout = true
+        case "start-exercise":
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               let typeItem = components.queryItems?.first(where: { $0.name == "type" }),
+               let typeValue = typeItem.value,
+               let exerciseType = ExerciseType(rawValue: typeValue) {
+                store.requestFinishActiveWorkout = false
+                store.activeWorkoutType = exerciseType
+            }
+        case "start-rest":
+            let duration: Int
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+               let durItem = components.queryItems?.first(where: { $0.name == "duration" }),
+               let durValue = durItem.value,
+               let parsed = Int(durValue) {
+                duration = parsed
+            } else {
+                duration = 60
+            }
+            store.startSmartRest(duration: duration)
+            store.isShowingRestTimer = true
+        case "form-check":
+            if let lastSession = store.sessions.first {
+                VoiceCommandManager.shared.speakFeedback(
+                    "Your last set of \(lastSession.exerciseName) scored \(lastSession.score)% form accuracy with \(lastSession.reps) reps."
+                )
+            }
+        default:
+            break
+        }
+    }
+    
+    private func checkPendingSiriActions() {
+        let now = Date().timeIntervalSince1970
+        
+        // 1. Check Pending Finish Set
+        if let timestamp = UserDefaults.standard.object(forKey: "\(SiriCommandBridge.keyPendingFinishSet).timestamp") as? Double,
+           now - timestamp < 30.0 {
+            UserDefaults.standard.removeObject(forKey: SiriCommandBridge.keyPendingFinishSet)
+            UserDefaults.standard.removeObject(forKey: "\(SiriCommandBridge.keyPendingFinishSet).timestamp")
+            store.requestFinishActiveWorkout = true
+        }
+        
+        // 2. Check Pending Start Exercise
+        if let rawValue = UserDefaults.standard.string(forKey: SiriCommandBridge.keyPendingStartExercise),
+           let timestamp = UserDefaults.standard.object(forKey: "\(SiriCommandBridge.keyPendingStartExercise).timestamp") as? Double,
+           now - timestamp < 30.0,
+           let exerciseType = ExerciseType(rawValue: rawValue) {
+            UserDefaults.standard.removeObject(forKey: SiriCommandBridge.keyPendingStartExercise)
+            UserDefaults.standard.removeObject(forKey: "\(SiriCommandBridge.keyPendingStartExercise).timestamp")
+            store.requestFinishActiveWorkout = false
+            store.activeWorkoutType = exerciseType
+        }
+        
+        // 3. Check Pending Start Rest
+        if let duration = UserDefaults.standard.object(forKey: SiriCommandBridge.keyPendingStartRest) as? Int,
+           let timestamp = UserDefaults.standard.object(forKey: "\(SiriCommandBridge.keyPendingStartRest).timestamp") as? Double,
+           now - timestamp < 30.0 {
+            UserDefaults.standard.removeObject(forKey: SiriCommandBridge.keyPendingStartRest)
+            UserDefaults.standard.removeObject(forKey: "\(SiriCommandBridge.keyPendingStartRest).timestamp")
+            store.startSmartRest(duration: duration)
+            store.isShowingRestTimer = true
+        }
     }
 }
 

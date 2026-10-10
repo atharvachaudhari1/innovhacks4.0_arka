@@ -4,6 +4,9 @@ import SwiftUI
 struct DashboardView: View {
     @ObservedObject var store: WorkoutStore
     @Binding var selectedTab: Int
+    @ObservedObject private var voiceManager = VoiceCommandManager.shared
+    @State private var showRestTimerSheet: Bool = false
+    @State private var showAnalyticsSheet: Bool = false
     
     // Calendar days for October 2026
     private let calendarDays: [(day: String, num: Int, isToday: Bool)] = [
@@ -31,6 +34,72 @@ struct DashboardView: View {
                         .foregroundColor(FitTheme.textSecondary)
                 }
                 .padding(.top, 54)
+                
+                // Hands-Free Voice Commands Pill
+                VStack(spacing: 8) {
+                    Button(action: {
+                        voiceManager.toggleListening(store: store)
+                    }) {
+                        HStack(spacing: 10) {
+                            ZStack {
+                                Circle()
+                                    .fill((voiceManager.isListening || voiceManager.isEnabled) ? Color.red.opacity(0.2) : FitTheme.accentLime.opacity(0.15))
+                                    .frame(width: 34, height: 34)
+                                Image(systemName: (voiceManager.isListening || voiceManager.isEnabled) ? "waveform" : "mic.fill")
+                                    .font(.system(size: 15, weight: .bold))
+                                    .foregroundColor((voiceManager.isListening || voiceManager.isEnabled) ? .red : FitTheme.accentLime)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 6) {
+                                    Text((voiceManager.isListening || voiceManager.isEnabled) ? "Listening Hands-Free..." : "Voice Coaching Commands")
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(.white)
+                                    if (voiceManager.isListening || voiceManager.isEnabled) {
+                                        Circle()
+                                            .fill(Color.red)
+                                            .frame(width: 6, height: 6)
+                                    }
+                                }
+                                Text(voiceManager.lastCommandDetected != nil ? "Detected: '\(voiceManager.lastCommandDetected!)'" : "Say 'start squats' or 'how was that set?'")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(FitTheme.textSecondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Text((voiceManager.isListening || voiceManager.isEnabled) ? "Stop" : "Enable")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundColor((voiceManager.isListening || voiceManager.isEnabled) ? .red : FitTheme.accentLime)
+                                .padding(.horizontal, 9)
+                                .padding(.vertical, 5)
+                                .background(Color.white.opacity(0.08))
+                                .cornerRadius(6)
+                        }
+                        .padding(12)
+                        .background(FitTheme.cardBackground)
+                        .cornerRadius(FitTheme.radiusMedium)
+                        .overlay(RoundedRectangle(cornerRadius: FitTheme.radiusMedium).stroke((voiceManager.isListening || voiceManager.isEnabled) ? Color.red.opacity(0.5) : FitTheme.cardBorder, lineWidth: 1))
+                    }
+                    
+                    // Quick Action Voice Command Chips
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            VoiceChip(label: "🎙️ 'Start Squats'") {
+                                voiceManager.simulateCommand("start squats", store: store)
+                            }
+                            VoiceChip(label: "🎙️ 'Start Pushups'") {
+                                voiceManager.simulateCommand("start pushups", store: store)
+                            }
+                            VoiceChip(label: "🎙️ 'How was that set?'") {
+                                voiceManager.simulateCommand("how was that set?", store: store)
+                            }
+                            VoiceChip(label: "⏱️ 'Start Rest'") {
+                                voiceManager.simulateCommand("start rest", store: store)
+                            }
+                        }
+                    }
+                }
                 
                 // 2. 7-Day Calendar Strip (calendar_day.xml parity)
                 HStack(spacing: 8) {
@@ -134,6 +203,133 @@ struct DashboardView: View {
                 )
                 .cornerRadius(FitTheme.radiusLarge)
                 
+                // 4.5. Personal Records & Lifter Streak Badges
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        HStack(spacing: 6) {
+                            Text("🔥")
+                            Text("\(store.streakDays)-Day Lifter Streak")
+                                .font(.system(size: 17, weight: .heavy))
+                                .foregroundColor(.white)
+                        }
+                        Spacer()
+                        Text("Active Streak")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(FitTheme.accentLime)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(FitTheme.accentLime.opacity(0.15))
+                            .cornerRadius(4)
+                    }
+                    
+                    // Horizontal Badges Carousel
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(store.milestoneBadges) { badge in
+                                HStack(spacing: 10) {
+                                    Text(badge.icon)
+                                        .font(.system(size: 26))
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(badge.title)
+                                            .font(.system(size: 13, weight: .bold))
+                                            .foregroundColor(badge.isUnlocked ? .white : FitTheme.textSecondary)
+                                        Text(badge.subtitle)
+                                            .font(.system(size: 10))
+                                            .foregroundColor(FitTheme.textSecondary)
+                                            .lineLimit(1)
+                                    }
+                                }
+                                .padding(12)
+                                .background(badge.isUnlocked ? Color.white.opacity(0.06) : Color.white.opacity(0.02))
+                                .cornerRadius(FitTheme.radiusSmall)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: FitTheme.radiusSmall)
+                                        .stroke(badge.isUnlocked ? FitTheme.accentLime.opacity(0.4) : FitTheme.cardBorder, lineWidth: 1)
+                                )
+                            }
+                        }
+                    }
+                }
+                .padding(18)
+                .background(FitTheme.cardBackground)
+                .cornerRadius(FitTheme.radiusLarge)
+                .overlay(RoundedRectangle(cornerRadius: FitTheme.radiusLarge).stroke(FitTheme.cardBorder, lineWidth: 1))
+                
+                // 4.6. Smart Rest Timer (Recovery Driven)
+                Button(action: {
+                    showRestTimerSheet = true
+                }) {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            Circle()
+                                .fill(FitTheme.accentLime.opacity(0.15))
+                                .frame(width: 44, height: 44)
+                            Image(systemName: "timer")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(FitTheme.accentLime)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 3) {
+                            HStack(spacing: 6) {
+                                Text("Smart Rest Timer")
+                                    .font(.system(size: 15, weight: .bold))
+                                    .foregroundColor(.white)
+                                Text("❤️ \(store.currentHeartRate) BPM")
+                                    .font(.system(size: 11, weight: .heavy))
+                                    .foregroundColor(store.isHeartRateRecovered ? FitTheme.accentLime : .orange)
+                            }
+                            Text(store.isHeartRateRecovered ? "Heart rate recovered! Ready to start set 2." : "Adaptive rest: waits for cardiovascular recovery (<115 BPM)")
+                                .font(.system(size: 12))
+                                .foregroundColor(FitTheme.textSecondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Text("Start →")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(FitTheme.accentLime)
+                    }
+                    .padding(16)
+                    .background(FitTheme.cardBackground)
+                    .cornerRadius(FitTheme.radiusMedium)
+                    .overlay(RoundedRectangle(cornerRadius: FitTheme.radiusMedium).stroke(FitTheme.cardBorder, lineWidth: 1))
+                }
+                
+                // 4.7. Progress Analytics Charts Quick Banner
+                Button(action: {
+                    showAnalyticsSheet = true
+                }) {
+                    HStack(spacing: 14) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.cyan.opacity(0.15))
+                                .frame(width: 44, height: 44)
+                            Image(systemName: "chart.xyaxis.line")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(Color.cyan)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Workout Progress Charts")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundColor(.white)
+                            Text("Multi-week form accuracy, reps & heart rate trends")
+                                .font(.system(size: 12))
+                                .foregroundColor(FitTheme.textSecondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Text("View →")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(Color.cyan)
+                    }
+                    .padding(16)
+                    .background(FitTheme.cardBackground)
+                    .cornerRadius(FitTheme.radiusMedium)
+                    .overlay(RoundedRectangle(cornerRadius: FitTheme.radiusMedium).stroke(Color.cyan.opacity(0.3), lineWidth: 1))
+                }
+                
                 // 5. Featured Quick Start AI Coach Section
                 VStack(alignment: .leading, spacing: 6) {
                     Text("⚡ Quick Start AI Coach")
@@ -196,6 +392,43 @@ struct DashboardView: View {
             .padding(.horizontal, 20)
         }
         .background(FitTheme.background.ignoresSafeArea())
+        .sheet(isPresented: $showRestTimerSheet) {
+            SmartRestTimerSheet(store: store)
+        }
+        .sheet(isPresented: $showAnalyticsSheet) {
+            NavigationView {
+                AnalyticsDashboardView(store: store)
+                    .navigationTitle("Workout Progress")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("Done") {
+                                showAnalyticsSheet = false
+                            }
+                            .foregroundColor(FitTheme.accentLime)
+                        }
+                    }
+            }
+        }
+    }
+}
+
+// MARK: - Voice Command Chip Helper
+struct VoiceChip: View {
+    let label: String
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.system(size: 11, weight: .bold))
+                .foregroundColor(.white)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Color.white.opacity(0.08))
+                .cornerRadius(12)
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.15), lineWidth: 1))
+        }
     }
 }
 

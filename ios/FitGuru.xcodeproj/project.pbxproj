@@ -24,6 +24,10 @@
 		1A0000472800000100000001 /* VoiceSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000462800000100000001 /* VoiceSettingsSheet.swift */; };
 		1A0000492800000100000001 /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000482800000100000001 /* GeminiService.swift */; };
 		1A00004B2800000100000001 /* WorkoutSummarySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00004A2800000100000001 /* WorkoutSummarySheet.swift */; };
+		1A00004D2800000100000001 /* VoiceCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00004C2800000100000001 /* VoiceCommandManager.swift */; };
+		1A00004F2800000100000001 /* SmartRestTimerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00004E2800000100000001 /* SmartRestTimerSheet.swift */; };
+		1A0000512800000100000001 /* AnalyticsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000502800000100000001 /* AnalyticsDashboardView.swift */; };
+		1A0000532800000100000001 /* SiriIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000522800000100000001 /* SiriIntents.swift */; };
 		1A0000172800000100000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0000162800000100000001 /* Assets.xcassets */; };
 		1A0000192800000100000001 /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 1A0000182800000100000001 /* Web */; };
 /* End PBXBuildFile section */
@@ -47,6 +51,10 @@
 		1A0000462800000100000001 /* VoiceSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceSettingsSheet.swift; sourceTree = "<group>"; };
 		1A0000482800000100000001 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		1A00004A2800000100000001 /* WorkoutSummarySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummarySheet.swift; sourceTree = "<group>"; };
+		1A00004C2800000100000001 /* VoiceCommandManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandManager.swift; sourceTree = "<group>"; };
+		1A00004E2800000100000001 /* SmartRestTimerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartRestTimerSheet.swift; sourceTree = "<group>"; };
+		1A0000502800000100000001 /* AnalyticsDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsDashboardView.swift; sourceTree = "<group>"; };
+		1A0000522800000100000001 /* SiriIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiriIntents.swift; sourceTree = "<group>"; };
 		1A0000162800000100000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A0000182800000100000001 /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		1A0000202800000100000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -90,6 +98,10 @@
 				1A0000462800000100000001 /* VoiceSettingsSheet.swift */,
 				1A0000482800000100000001 /* GeminiService.swift */,
 				1A00004A2800000100000001 /* WorkoutSummarySheet.swift */,
+				1A00004C2800000100000001 /* VoiceCommandManager.swift */,
+				1A00004E2800000100000001 /* SmartRestTimerSheet.swift */,
+				1A0000502800000100000001 /* AnalyticsDashboardView.swift */,
+				1A0000522800000100000001 /* SiriIntents.swift */,
 				1A0000142800000100000001 /* WebView.swift */,
 				1A0000162800000100000001 /* Assets.xcassets */,
 				1A0000182800000100000001 /* Web */,
@@ -194,6 +206,10 @@
 				1A0000472800000100000001 /* VoiceSettingsSheet.swift in Sources */,
 				1A0000492800000100000001 /* GeminiService.swift in Sources */,
 				1A00004B2800000100000001 /* WorkoutSummarySheet.swift in Sources */,
+				1A00004D2800000100000001 /* VoiceCommandManager.swift in Sources */,
+				1A00004F2800000100000001 /* SmartRestTimerSheet.swift in Sources */,
+				1A0000512800000100000001 /* AnalyticsDashboardView.swift in Sources */,
+				1A0000532800000100000001 /* SiriIntents.swift in Sources */,
 				1A0000152800000100000001 /* WebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

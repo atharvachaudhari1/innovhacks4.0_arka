@@ -16,6 +16,7 @@ struct WorkoutSummarySheet: View {
     @State private var isLoading: Bool = true
     @State private var isSpeaking: Bool = false
     @State private var recordedWeightKg: Double = 0.0
+    @State private var showRestSheet: Bool = false
     
     init(
         session: WorkoutSession,
@@ -357,6 +358,27 @@ struct WorkoutSummarySheet: View {
                         .cornerRadius(FitTheme.radiusMedium)
                         .overlay(RoundedRectangle(cornerRadius: FitTheme.radiusMedium).stroke(FitTheme.cardBorder, lineWidth: 1))
                         
+                        // 5.5. Smart Rest Interval Button (Next Set)
+                        Button(action: {
+                            showRestSheet = true
+                        }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "timer")
+                                    .font(.system(size: 15, weight: .bold))
+                                Text("⏱️ Start Smart Rest Interval (Set 2)")
+                                    .font(.system(size: 14, weight: .bold))
+                                Spacer()
+                                Text("❤️ Recovery Paced")
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundColor(FitTheme.accentLime)
+                            }
+                            .foregroundColor(.white)
+                            .padding(14)
+                            .background(Color.white.opacity(0.08))
+                            .cornerRadius(FitTheme.radiusMedium)
+                            .overlay(RoundedRectangle(cornerRadius: FitTheme.radiusMedium).stroke(FitTheme.cardBorder, lineWidth: 1))
+                        }
+                        
                         // 6. Done / Return Button
                         Button(action: {
                             elevenLabs.stop()
@@ -387,6 +409,9 @@ struct WorkoutSummarySheet: View {
                     }
                     .foregroundColor(FitTheme.accentLime)
                 }
+            }
+            .sheet(isPresented: $showRestSheet) {
+                SmartRestTimerSheet(store: WorkoutStore())
             }
             .onAppear {
                 generateReports()

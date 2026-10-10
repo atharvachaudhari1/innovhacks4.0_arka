@@ -53,7 +53,7 @@ enum CoachPersona: String, CaseIterable, Identifiable {
 }
 
 // MARK: - ElevenLabs Real-Time Audio Engine
-class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
+class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVSpeechSynthesizerDelegate {
     static let shared = ElevenLabsService()
     
     // Published State
@@ -68,9 +68,14 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
     }
     @Published var isSpeaking: Bool = false
     
+    var isConfigured: Bool {
+        return isEnabled && !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
     private var audioPlayer: AVAudioPlayer?
     private let fallbackSynthesizer = AVSpeechSynthesizer()
     private let cacheDirectory: URL
+    private var onAudioComplete: (() -> Void)?
     
     override init() {
         self.isEnabled = UserDefaults.standard.object(forKey: "elevenlabs_enabled") as? Bool ?? true
@@ -95,13 +100,19 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         self.cacheDirectory = paths[0].appendingPathComponent("ElevenLabsCache", isDirectory: true)
         
         super.init()
+        fallbackSynthesizer.delegate = self
         try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
         setupAudioSession()
     }
     
     private func setupAudioSession() {
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
-        try? AVAudioSession.sharedInstance().setActive(true)
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP, .mixWithOthers])
+            try session.setActive(true, options: .notifyOthersOnDeactivation)
+        } catch {
+            print("ElevenLabs audio session setup error: \(error.localizedDescription)")
+        }
     }
     
     // MARK: - Speech Synthesis (With In-Memory & Disk Caching)
@@ -110,8 +121,7 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         
         // If ElevenLabs is toggled off or no API key, seamlessly use native device TTS fallback
         guard isEnabled, !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            speakWithFallback(text)
-            onComplete?()
+            speakWithFallback(text, onComplete: onComplete)
             return
         }
         
@@ -126,8 +136,7 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         
         // 2. Fetch from ElevenLabs REST API
         guard let url = URL(string: "https://api.elevenlabs.io/v1/text-to-speech/\(activePersona.voiceId)?output_format=mp3_44100_128") else {
-            speakWithFallback(text)
-            onComplete?()
+            speakWithFallback(text, onComplete: onComplete)
             return
         }
         
@@ -149,8 +158,7 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         ]
         
         guard let httpBody = try? JSONSerialization.data(withJSONObject: body) else {
-            speakWithFallback(text)
-            onComplete?()
+            speakWithFallback(text, onComplete: onComplete)
             return
         }
         request.httpBody = httpBody
@@ -160,8 +168,7 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
                   let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                 DispatchQueue.main.async {
                     // Fall back to on-device TTS on network issue or quota limit
-                    self?.speakWithFallback(text)
-                    onComplete?()
+                    self?.speakWithFallback(text, onComplete: onComplete)
                 }
                 return
             }
@@ -175,22 +182,46 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         }.resume()
     }
     
+    var isCurrentlySpeaking: Bool {
+        return isSpeaking || fallbackSynthesizer.isSpeaking || (audioPlayer?.isPlaying ?? false)
+    }
+    
     private func playAudio(from fileURL: URL, onComplete: (() -> Void)? = nil) {
         do {
             setupAudioSession()
+            if let oldCallback = self.onAudioComplete {
+                self.onAudioComplete = nil
+                oldCallback()
+            }
+            if audioPlayer?.isPlaying == true {
+                audioPlayer?.stop()
+            }
+            if fallbackSynthesizer.isSpeaking {
+                fallbackSynthesizer.stopSpeaking(at: .immediate)
+            }
+            self.onAudioComplete = onComplete
             audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
             audioPlayer?.delegate = self
             isSpeaking = true
             audioPlayer?.play()
         } catch {
-            speakWithFallback("")
-            onComplete?()
+            speakWithFallback("", onComplete: onComplete)
         }
     }
     
     // MARK: - Smart Native TTS Fallback
-    func speakWithFallback(_ text: String) {
-        guard !text.isEmpty else { return }
+    func speakWithFallback(_ text: String, onComplete: (() -> Void)? = nil) {
+        guard !text.isEmpty else {
+            onComplete?()
+            NotificationCenter.default.post(name: NSNotification.Name("FitGuru.TTS.Finished"), object: nil)
+            return
+        }
+        if let oldCallback = self.onAudioComplete {
+            self.onAudioComplete = nil
+            oldCallback()
+        }
+        self.onAudioComplete = onComplete
+        isSpeaking = true
         let utterance = AVSpeechUtterance(string: text)
         utterance.rate = 0.52
         utterance.pitchMultiplier = 1.05
@@ -202,12 +233,31 @@ class ElevenLabsService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         audioPlayer?.stop()
         fallbackSynthesizer.stopSpeaking(at: .immediate)
         isSpeaking = false
+        let callback = onAudioComplete
+        onAudioComplete = nil
+        callback?()
+        NotificationCenter.default.post(name: NSNotification.Name("FitGuru.TTS.Finished"), object: nil)
     }
     
     // MARK: - AVAudioPlayerDelegate
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async {
             self.isSpeaking = false
+            let callback = self.onAudioComplete
+            self.onAudioComplete = nil
+            callback?()
+            NotificationCenter.default.post(name: NSNotification.Name("FitGuru.TTS.Finished"), object: nil)
+        }
+    }
+    
+    // MARK: - AVSpeechSynthesizerDelegate
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        DispatchQueue.main.async {
+            self.isSpeaking = false
+            let callback = self.onAudioComplete
+            self.onAudioComplete = nil
+            callback?()
+            NotificationCenter.default.post(name: NSNotification.Name("FitGuru.TTS.Finished"), object: nil)
         }
     }
 }

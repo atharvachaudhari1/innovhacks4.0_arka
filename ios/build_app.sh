@@ -23,10 +23,16 @@ xcrun --sdk iphonesimulator swiftc \
   -framework AVFoundation \
   -framework Vision \
   -framework UIKit \
+  -framework Speech \
+  -framework AppIntents \
   "$DIR/FitGuru/Theme.swift" \
   "$DIR/FitGuru/Models.swift" \
   "$DIR/FitGuru/GymCatalogData.swift" \
   "$DIR/FitGuru/PoseEstimator.swift" \
+  "$DIR/FitGuru/VoiceCommandManager.swift" \
+  "$DIR/FitGuru/SiriIntents.swift" \
+  "$DIR/FitGuru/SmartRestTimerSheet.swift" \
+  "$DIR/FitGuru/AnalyticsDashboardView.swift" \
   "$DIR/FitGuru/PoseCoachView.swift" \
   "$DIR/FitGuru/DashboardView.swift" \
   "$DIR/FitGuru/WorkoutsView.swift" \

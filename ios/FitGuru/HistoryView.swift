@@ -5,6 +5,7 @@ struct HistoryView: View {
     @ObservedObject var store: WorkoutStore
     @Environment(\.dismiss) private var dismiss
     @State private var selectedSession: WorkoutSession? = nil
+    @State private var viewMode: Int = 0
     
     private let dateFormatter: DateFormatter = {
         let df = DateFormatter()
@@ -68,8 +69,20 @@ struct HistoryView: View {
                     .cornerRadius(FitTheme.radiusMedium)
                     .overlay(RoundedRectangle(cornerRadius: FitTheme.radiusMedium).stroke(FitTheme.cardBorder, lineWidth: 1))
                     
-                    // Session List (item_history_entry.xml parity)
-                    if store.sessions.isEmpty {
+                    // View Mode Segmented Picker
+                    Picker("View Mode", selection: $viewMode) {
+                        Text("📋 Workout Logs").tag(0)
+                        Text("📊 Progress Analytics").tag(1)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.top, 4)
+                    
+                    if viewMode == 1 {
+                        // Multi-week Form, Reps & Heart Rate Progress Charts
+                        AnalyticsDashboardView(store: store)
+                    } else {
+                        // Session List (item_history_entry.xml parity)
+                        if store.sessions.isEmpty {
                         VStack(spacing: 12) {
                             Text("🏃")
                                 .font(.system(size: 48))
@@ -153,6 +166,7 @@ struct HistoryView: View {
                             }
                         }
                     }
+                }
                 }
                 .padding(20)
             }

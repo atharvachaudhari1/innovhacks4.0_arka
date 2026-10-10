@@ -1073,8 +1073,9 @@ class PoseEstimator: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleB
     }
     
     private func setupAudioSession() {
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.mixWithOthers])
-        try? AVAudioSession.sharedInstance().setActive(true)
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetoothHFP, .mixWithOthers])
+        try? session.setActive(true)
     }
     
     private func startPlankTimer() {
