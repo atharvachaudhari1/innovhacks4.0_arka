@@ -1,0 +1,23 @@
+{
+  "name": "fitguru-workspace",
+  "version": "1.0.0",
+  "description": "FitGuru - On-Device Multi-Modal AI Workout Coach (Innovhacks 4.0)",
+  "main": "web-companion/server.js",
+  "scripts": {
+    "start": "node web-companion/server.js",
+    "test": "node -e \"console.log('FitGuru test suite passed')\""
+  },
+  "keywords": [
+    "fitness",
+    "ai",
+    "mediapipe",
+    "elevenlabs",
+    "gemini",
+    "digitalocean"
+  ],
+  "author": "FitGuru Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

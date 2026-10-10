@@ -1,0 +1,22 @@
+name: fitguru-companion
+region: nyc
+services:
+  - name: web-companion
+    source_dir: web-companion
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 8080
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "8080"
+    health_check:
+      http_path: /healthz
+      initial_delay_seconds: 5
+      period_seconds: 10
+      timeout_seconds: 5
+    routes:
+      - path: /
+    run_command: npm start
