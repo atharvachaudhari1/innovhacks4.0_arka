@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FitGuru — On-Device Multi-Modal AI Workout Coach | Innovhacks 4.0</title>
+  <link rel="icon" type="image/png" href="assets/logo_splash.png">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- MediaPipe Pose and Camera Utils -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+  
+  <!-- QR Code Generator for mobile connect -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    (function() {
+      var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || 
+                  navigator.userAgent.includes('FitGuru-iOS') ||
+                  (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.nativeBridge);
+      if (isIOS) {
+        document.documentElement.classList.add('native-ios');
+        document.addEventListener('DOMContentLoaded', function() {
+          document.body.classList.remove('frame-mode');
+          document.body.classList.add('native-ios');
+        });
+      }
+    })();
+  </script>
+</head>
+<body class="theme-dark frame-mode">
+
+  <!-- Desktop Top Bar -->
+  <header class="desktop-header">
+    <div class="brand-container">
+      <img src="assets/logo_splash.png" alt="FitGuru" class="brand-logo" onerror="this.style.display='none'">
+      <div class="brand-text">
+        <span class="brand-name">FitGuru <span class="badge-genai">Innovhacks 4.0</span></span>
+        <span class="brand-tagline">On-Device Multi-Modal AI Workout Coach</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="device-status">
+        <span class="pulse-dot"></span>
+        <span class="status-label">Smartwatch: <strong class="text-lime">Connected (DataLayer)</strong></span>
+      </div>
+      <button id="toggleFrameBtn" class="btn-secondary" title="Switch between Mobile Frame & Fullscreen">
+        <span id="frameIcon">📱</span> <span id="frameText">Fullscreen View</span>
+      </button>
+      <a href="#apk-hub" onclick="switchTab('apk-hub')" class="btn-primary-sm">
+        <span>📥 Get Mobile APK</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-viewport">
+    
+    <!-- Phone Mockup Wrapper -->
+    <div class="phone-frame" id="phoneFrame">
+      
+      <!-- Phone Bezel Details -->
+      <div class="phone-speaker"></div>
+      <div class="phone-notch">
+        <div class="notch-camera"></div>
+      </div>
+
+      <!-- Mobile Screen Content -->
+      <div class="phone-screen" id="phoneScreen">
+        
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span class="status-time" id="statusTime">09:41</span>
+          <div class="status-icons">
+            <span class="status-icon">📶 5G</span>
+            <span class="status-icon">􀙇</span>
+            <span class="status-icon">🔋 98%</span>
+          </div>
+        </div>
+
+        <!-- SPLASH SCREEN -->
+        <section id="splashScreen" class="screen-view splash-screen active">
+          <div class="splash-content">
+            <div class="splash-logo-wrap">
+              <img src="assets/logo_splash.png" alt="FitGuru" class="splash-logo" onerror="this.outerHTML='<div class=\'fallback-logo\'>⚡ FitGuru</div>'">
+              <div class="splash-glow"></div>
+            </div>
+            <h1 class="splash-title">FitGuru</h1>
+            <p class="splash-subtitle">On-Device AI Coaching & Biometric Fusion</p>
+            <div class="splash-loader">
+              <div class="loader-bar"></div>
+            </div>
+            <span class="splash-subtext">Innovhacks 4.0 Submission</span>
+          </div>
+        </section>
+
+        <!-- DASHBOARD TAB -->
+        <section id="tab-dashboard" class="screen-view tab-content">
+          <!-- App Header -->
+          <div class="mobile-header">
+            <div class="user-greeting">
+              <span class="greeting-sub" id="currentDateHeader">October 2026</span>
+              <h2 class="greeting-title">Hello, <span id="dashUserName" class="text-lime">Athrava</span> 👋</h2>
+            </div>
+            <div class="watch-biometric-pill">
+              <span class="heart-pulse-icon">❤️</span>
+              <span id="dashBpm" class="bpm-text">128 BPM</span>
+            </div>
+          </div>
+
+          <div class="screen-scrollable">
+            <!-- 7-Day Calendar Bar -->
+            <div class="calendar-bar-container">
+              <div class="calendar-bar" id="calendarBar">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+
+            <!-- Weekly Goal Card -->
+            <div class="card goal-card" id="goalCard">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <span class="card-icon">🎯</span>
+                  <span class="card-title">Weekly Rep Goal</span>
+                </div>
+                <button class="btn-icon-text" id="editGoalBtn">Edit Goal ✎</button>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="weeklyProgressFill" style="width: 25%;"></div>
+                </div>
+                <div class="progress-labels">
+                  <span id="currentRepsText">Current: <strong>50 reps</strong></span>
+                  <span id="goalRepsText">Goal: <strong>200 reps</strong></span>
+                </div>
+              </div>
+              <div class="goal-stats-row">
+                <div class="mini-stat">
+                  <span class="stat-num" id="goalPercent">25%</span>
+                  <span class="stat-lbl">Completed</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="stat-num" id="repsRemaining">150</span>
+                  <span class="stat-lbl">Reps Left</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="stat-num text-lime">On Track</span>
+                  <span class="stat-lbl">Pace</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Daily Challenge Card -->
+            <div class="card challenge-card" id="challengeCard">
+              <div class="challenge-badge">⚡ Daily Challenge</div>
+              <h3 class="challenge-title" id="challengeTitle">Solid Strength</h3>
+              <p class="challenge-desc" id="challengeDesc">Show your strength with 25 push-ups.</p>
+              
+              <div class="challenge-footer">
+                <div class="challenge-target">
+                  <span class="text-secondary">Target:</span>
+                  <strong id="challengeTarget">25 Push-ups</strong>
+                </div>
+                <button class="btn-accent-sm" id="startChallengeBtn">
+                  <span>Start Challenge 🚀</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Biometrics (Wearable Sensor Simulation) -->
+            <div class="section-title-row">
+              <h4 class="section-title">Wearable Health Biometrics</h4>
+              <span class="badge-live">LIVE SYNC</span>
+            </div>
+
+            <div class="biometrics-grid">
+              <div class="biometric-card heart-card">
+                <div class="bio-icon">❤️</div>
+                <div class="bio-info">
+                  <span class="bio-value" id="liveHeartRate">124</span>
+                  <span class="bio-unit">BPM</span>
+                </div>
+                <span class="bio-label">Heart Rate (Watch)</span>
+                <div class="pulse-sparkline">
+                  <span class="bar b1"></span><span class="bar b2"></span><span class="bar b3"></span>
+                  <span class="bar b4"></span><span class="bar b5"></span><span class="bar b6"></span>
+                </div>
+              </div>
+
+              <div class="biometric-card cal-card">
+                <div class="bio-icon">🔥</div>
+                <div class="bio-info">
+                  <span class="bio-value" id="liveCalories">385</span>
+                  <span class="bio-unit">kcal</span>
+                </div>
+                <span class="bio-label">Active Burned</span>
+                <div class="bio-sub">Daily Goal: 500 kcal</div>
+              </div>
+
+              <div class="biometric-card steps-card">
+                <div class="bio-icon">👟</div>
+                <div class="bio-info">
+                  <span class="bio-value" id="liveSteps">6,840</span>
+                  <span class="bio-unit">steps</span>
+                </div>
+                <span class="bio-label">Daily Steps</span>
+                <div class="bio-sub">68% of 10,000</div>
+              </div>
+            </div>
+
+            <!-- Quick Start Workouts -->
+            <div class="section-title-row">
+              <h4 class="section-title">AI Workouts</h4>
+              <span class="text-secondary" style="font-size:12px;">33 Keypoint Tracking</span>
+            </div>
+
+            <div class="quick-workout-row">
+              <div class="quick-workout-card" onclick="startWorkout('PUSH_UP')">
+                <div class="workout-card-overlay"></div>
+                <div class="workout-card-content">
+                  <span class="workout-tag">Chest & Core</span>
+                  <h4>Push-ups AI Coach</h4>
+                  <p>State-machine rep counter + Hip sag/pike correction</p>
+                  <button class="btn-start">Start Coach ➔</button>
+                </div>
+              </div>
+
+              <div class="quick-workout-card squat-theme" onclick="startWorkout('SQUAT')">
+                <div class="workout-card-overlay"></div>
+                <div class="workout-card-content">
+                  <span class="workout-tag">Legs & Glutes</span>
+                  <h4>Squats AI Coach</h4>
+                  <p>Knee angle depth tracking + Chest upright cues</p>
+                  <button class="btn-start">Start Coach ➔</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="height: 90px;"></div>
+          </div>
+        </section>
+
+        <!-- WORKOUTS TAB -->
+        <section id="tab-workouts" class="screen-view tab-content">
+          <div class="mobile-header">
+            <div>
+              <span class="greeting-sub">Training Library</span>
+              <h2 class="greeting-title">Choose Workout</h2>
+            </div>
+          </div>
+
+          <div class="screen-scrollable">
+            <div class="workout-detail-card" onclick="startWorkout('PUSH_UP')">
+              <div class="detail-header">
+                <div class="detail-badge">Upper Body</div>
+                <span class="ai-badge">MediaPipe AI</span>
+              </div>
+              <h3>Push-ups Real-Time Coach</h3>
+              <p>Detects elbow flexion (&lt;90° down, &gt;160° up) and evaluates spinal posture using shoulder-hip-knee vectors.</p>
+              <div class="specs-grid">
+                <div class="spec-item"><span class="spec-label">Target Joints</span><span class="spec-val">Elbow, Hip, Knee</span></div>
+                <div class="spec-item"><span class="spec-label">AI Fallback</span><span class="spec-val">Generative AI Reflex</span></div>
+              </div>
+              <button class="btn-accent-full"><span>Start Push-up Session ⚡</span></button>
+            </div>
+
+            <div class="workout-detail-card squat-border" onclick="startWorkout('SQUAT')">
+              <div class="detail-header">
+                <div class="detail-badge squat-badge">Lower Body</div>
+                <span class="ai-badge">MediaPipe AI</span>
+              </div>
+              <h3>Squats Real-Time Coach</h3>
+              <p>Calculates dynamic knee angle (&lt;105° down, &gt;155° up) and guards against forward torso collapse with live audio feedback.</p>
+              <div class="specs-grid">
+                <div class="spec-item"><span class="spec-label">Target Joints</span><span class="spec-val">Hip, Knee, Ankle</span></div>
+                <div class="spec-item"><span class="spec-label">Depth Cue</span><span class="spec-val">Parallel / Deep</span></div>
+              </div>
+              <button class="btn-accent-full"><span>Start Squat Session ⚡</span></button>
+            </div>
+
+            <div style="margin-top:20px;font-size:16px;font-weight:700;color:#fff;">⚡ More AI-Tracked Exercises</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+              <div class="quick-mini-card" onclick="startWorkout('BICEP_CURL')"><div class="qmc-icon">💪</div><div class="qmc-name">Bicep Curls</div><div class="qmc-muscles">Biceps • Arms</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('LUNGE')"><div class="qmc-icon">🦵</div><div class="qmc-name">Lunges</div><div class="qmc-muscles">Quads • Balance</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('PLANK')"><div class="qmc-icon">🧘</div><div class="qmc-name">Plank Hold</div><div class="qmc-muscles">Core • Stability</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('BENCH_PRESS')"><div class="qmc-icon">🛏️</div><div class="qmc-name">Bench Press</div><div class="qmc-muscles">Chest • Triceps</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('DEADLIFT')"><div class="qmc-icon">🏋️</div><div class="qmc-name">Deadlifts</div><div class="qmc-muscles">Hamstrings • Back</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('PULL_UP')"><div class="qmc-icon">🧗</div><div class="qmc-name">Pull-ups</div><div class="qmc-muscles">Lats • Back</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('CHIN_UP')"><div class="qmc-icon">💪</div><div class="qmc-name">Chin-ups</div><div class="qmc-muscles">Biceps • Arms</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('RUNNING')"><div class="qmc-icon">🏃</div><div class="qmc-name">Running Cadence</div><div class="qmc-muscles">Cardio • Cadence</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('SHOULDER_PRESS')"><div class="qmc-icon">🙌</div><div class="qmc-name">Shoulder Press</div><div class="qmc-muscles">Delts • Shoulders</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('LEG_PRESS')"><div class="qmc-icon">🦵</div><div class="qmc-name">Leg Press</div><div class="qmc-muscles">Hamstrings • Quads</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('LAT_PULLDOWN')"><div class="qmc-icon">⬇️</div><div class="qmc-name">Lat Pulldown</div><div class="qmc-muscles">Back • Biceps</div></div>
+              <div class="quick-mini-card" onclick="startWorkout('TRICEPS_PUSHDOWN')"><div class="qmc-icon">🔗</div><div class="qmc-name">Triceps Pushdown</div><div class="qmc-muscles">Triceps • Arms</div></div>
+            </div>
+
+            <div style="margin-top:24px;font-size:16px;font-weight:700;color:#fff;">📖 Gym Equipment Directory</div>
+            <div style="font-size:12px;color:#94A3B8;margin-top:2px;margin-bottom:12px;">17 machines — tap to view setup guide &amp; form tips</div>
+            <div id="gymEquipmentList"></div>
+
+            <!-- Equipment Guide Modal (hidden) -->
+            <div id="equipGuideModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto;">
+              <div style="background:#121214;margin:20px auto;max-width:420px;border-radius:16px;padding:24px;border:1px solid #27272A;">
+                <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+                  <span id="egIcon" style="font-size:32px;"></span>
+                  <div><div id="egTitle" style="font-size:18px;font-weight:700;color:#fff;"></div><div id="egCategory" style="font-size:12px;color:#A4FF2E;font-weight:700;"></div></div>
+                  <button onclick="document.getElementById('equipGuideModal').style.display='none'" style="margin-left:auto;background:none;border:none;color:#94A3B8;font-size:22px;cursor:pointer;">✕</button>
+                </div>
+                <p id="egWhat" style="color:#94A3B8;font-size:13px;margin-bottom:14px;line-height:1.5;"></p>
+                <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">🛠️ Setup</div>
+                <p id="egSetup" style="color:#E2E8F0;font-size:13px;line-height:1.6;margin-bottom:12px;"></p>
+                <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">🎯 Proper Form</div>
+                <p id="egSteps" style="color:#E2E8F0;font-size:13px;line-height:1.6;margin-bottom:12px;"></p>
+                <div style="font-size:14px;font-weight:700;color:#FF7A00;margin-bottom:6px;">⚠️ Common Mistakes</div>
+                <p id="egMistakes" style="color:#CBD5E1;font-size:13px;line-height:1.6;margin-bottom:12px;"></p>
+                <div style="font-size:14px;font-weight:700;color:#FF453A;margin-bottom:6px;">🛡️ Safety</div>
+                <p id="egSafety" style="color:#CBD5E1;font-size:13px;line-height:1.6;margin-bottom:14px;"></p>
+                <div style="background:#1C1C1E;border-radius:10px;padding:10px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;">
+                  <span style="font-size:18px;">📷</span>
+                  <p id="egCamera" style="color:#94A3B8;font-size:12px;margin:0;line-height:1.5;"></p>
+                </div>
+                <button id="egStartBtn" onclick="" style="width:100%;padding:14px;background:#A4FF2E;color:#050505;font-weight:700;font-size:15px;border:none;border-radius:14px;cursor:pointer;">⚡ Start AI Coach</button>
+              </div>
+            </div>
+
+            <div class="card info-card">
+              <h4>🧠 Hybrid AI Engine Architecture</h4>
+              <p>1. <strong>Reflex Engine:</strong> Real-time zero-latency angle math running at 30 FPS.<br>
+                 2. <strong>Cognitive Engine:</strong> On-device Generative AI reasoning for in-depth technique cues.</p>
+              <img src="assets/system_architecture.png" alt="Architecture" class="arch-preview-img" onerror="this.style.display='none'">
+            </div>
+
+            <div style="height: 90px;"></div>
+          </div>
+        </section>
+
+        <!-- LIVE WORKOUT ROOM (CAMERA & POSE TRACKER) -->
+        <section id="tab-camera-room" class="screen-view camera-screen">
+          <!-- Video & Canvas Layer -->
+          <div class="camera-viewport">
+            <video id="webcam" class="camera-video" playsinline muted autoplay></video>
+            <canvas id="poseCanvas" class="pose-overlay"></canvas>
+
+            <!-- Top Camera HUD -->
+            <div class="camera-top-hud">
+              <div class="hud-left">
+                <div class="hud-pill heart-pill">
+                  <span class="heart-pulse-icon">❤️</span>
+                  <span id="camHeartRate">132 BPM</span>
+                </div>
+                <div class="hud-pill rep-pill">
+                  <span class="rep-label">REPS</span>
+                  <span id="camRepCount" class="rep-number">0</span>
+                </div>
+                <div class="hud-pill shield-pill" id="camShieldPill" onclick="resetGymSubjectLock()" style="cursor: pointer;" title="Gym Shield: Tap to re-lock lifter">
+                  <span id="camShieldIcon">🛡️</span>
+                  <span id="camShieldText">LIFTER LOCKED</span>
+                </div>
+              </div>
+
+              <div class="hud-right">
+                <button id="closeWorkoutBtn" class="btn-danger-pill" title="Finish Workout">
+                  <span>Finish ✕</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Exercise State Indicator (UP / DOWN) -->
+            <div class="state-indicator-badge" id="stateBadge">
+              <span id="stateText">READY (UP)</span>
+            </div>
+
+            <!-- AI Real-time Feedback Banner -->
+            <div class="ai-feedback-banner" id="aiFeedbackBanner">
+              <div class="feedback-icon" id="feedbackIcon">💡</div>
+              <div class="feedback-message" id="aiFeedbackText">Position yourself in full view of the camera</div>
+            </div>
+
+            <!-- AI Thinking Indicator (Gemma 3B Fallback/Cognitive Engine) -->
+            <div class="ai-thinking-indicator" id="aiThinkingIndicator">
+              <div class="thinking-spinner"></div>
+              <span>Generative AI Coach is reasoning...</span>
+            </div>
+
+            <!-- Live Angle HUD (Bottom Left) -->
+            <div class="angle-telemetry-hud" id="angleHud">
+              <div class="angle-row">
+                <span id="primaryAngleName">Elbow Angle:</span>
+                <strong id="primaryAngleVal">175°</strong>
+              </div>
+              <div class="angle-row">
+                <span>Hip Angle:</span>
+                <strong id="hipAngleVal">178°</strong>
+              </div>
+            </div>
+
+            <!-- Camera Bottom Controls -->
+            <div class="camera-bottom-controls">
+              <div class="controls-row">
+                <!-- Generative AI Toggle -->
+                <button id="toggleGenAiBtn" class="control-toggle-btn active">
+                  <span class="toggle-icon">✨</span>
+                  <span id="genAiBtnText">GenAI (ON)</span>
+                </button>
+
+                <!-- Voice Coach Audio Toggle -->
+                <button id="toggleTtsBtn" class="control-toggle-btn active">
+                  <span class="toggle-icon">🔊</span>
+                  <span id="ttsBtnText">Voice: ON</span>
+                </button>
+
+                <!-- Switch Camera / Mirror -->
+                <button id="switchCameraBtn" class="control-toggle-btn">
+                  <span class="toggle-icon">🔄</span>
+                  <span>Flip Cam</span>
+                </button>
+              </div>
+
+              <!-- Interactive Simulator Panel (For instant testing without camera or standing) -->
+              <div class="simulator-panel">
+                <div class="sim-header">
+                  <span>🧪 Test Mode Simulator (No camera needed):</span>
+                  <button id="toggleSimControls" class="btn-link">Toggle</button>
+                </div>
+                <div class="sim-buttons" id="simButtonsGroup">
+                  <button class="btn-sim" onclick="simulateRep('perfect')">✅ Do 1 Rep</button>
+                  <button class="btn-sim warn" onclick="simulateRep('hip_low')">⚠️ Hip Sag</button>
+                  <button class="btn-sim warn" onclick="simulateRep('hip_high')">⚠️ Hip Pike</button>
+                  <button class="btn-sim warn" onclick="simulateRep('chest_lean')">⚠️ Chest Lean</button>
+                  <button class="btn-sim auto" id="autoSimBtn" onclick="toggleAutoSimulation()">▶ Auto Run</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- PROFILE TAB -->
+        <section id="tab-profile" class="screen-view tab-content">
+          <div class="mobile-header">
+            <div>
+              <span class="greeting-sub">User Profile</span>
+              <h2 class="greeting-title">My FitGuru</h2>
+            </div>
+          </div>
+
+          <div class="screen-scrollable">
+            <!-- Profile Avatar Card -->
+            <div class="profile-card">
+              <div class="avatar-ring">
+                <div class="avatar-inner">⚡</div>
+              </div>
+              <div class="profile-details">
+                <h3 id="profileNameDisplay" class="profile-user-name">Athrava</h3>
+                <span class="profile-handle">@athrava • Innovhacks 4.0</span>
+                <span class="watch-connected-badge">⌚ Smartwatch Synced</span>
+              </div>
+              <button class="btn-edit-profile" id="editProfileNameBtn" title="Edit Name">✎</button>
+            </div>
+
+            <!-- Lifetime Statistics -->
+            <div class="stats-overview-grid">
+              <div class="stat-card">
+                <span class="stat-icon">💪</span>
+                <span class="stat-big" id="totalRepsLifetime">0</span>
+                <span class="stat-label">Total Reps</span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-icon">🏋️</span>
+                <span class="stat-big" id="totalWorkoutsLifetime">0</span>
+                <span class="stat-label">Workouts</span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-icon">🔥</span>
+                <span class="stat-big" id="totalCaloriesLifetime">0</span>
+                <span class="stat-label">Calories</span>
+              </div>
+
+              <div class="stat-card">
+                <span class="stat-icon">🎯</span>
+                <span class="stat-big" id="avgAccuracyLifetime">98%</span>
+                <span class="stat-label">Form Accuracy</span>
+              </div>
+            </div>
+
+            <!-- Profile Menu Items -->
+            <div class="menu-list-card">
+              <div class="menu-item" onclick="switchTab('history')">
+                <div class="menu-item-left">
+                  <span class="menu-icon">📜</span>
+                  <div class="menu-text">
+                    <strong>Workout History</strong>
+                    <span>View all past sessions & form scores</span>
+                  </div>
+                </div>
+                <span class="menu-arrow">➔</span>
+              </div>
+
+              <div class="menu-item" onclick="switchTab('apk-hub')">
+                <div class="menu-item-left">
+                  <span class="menu-icon">📲</span>
+                  <div class="menu-text">
+                    <strong>Download Mobile App (APK)</strong>
+                    <span>Install native Android release on your phone</span>
+                  </div>
+                </div>
+                <span class="menu-arrow">➔</span>
+              </div>
+
+              <div class="menu-item" onclick="openGoalModal()">
+                <div class="menu-item-left">
+                  <span class="menu-icon">🎯</span>
+                  <div class="menu-text">
+                    <strong>Weekly Goals & Target</strong>
+                    <span>Configure repetition targets</span>
+                  </div>
+                </div>
+                <span class="menu-arrow">➔</span>
+              </div>
+            </div>
+
+            <div style="height: 90px;"></div>
+          </div>
+        </section>
+
+        <!-- HISTORY TAB -->
+        <section id="tab-history" class="screen-view tab-content">
+          <div class="mobile-header">
+            <div>
+              <span class="greeting-sub">Activity Log</span>
+              <h2 class="greeting-title">Workout History</h2>
+            </div>
+            <button class="btn-secondary-sm" id="clearHistoryBtn">Clear</button>
+          </div>
+
+          <div class="screen-scrollable">
+            <!-- Filter Pills -->
+            <div class="filter-pills">
+              <button class="pill active" onclick="filterHistory('ALL')">All</button>
+              <button class="pill" onclick="filterHistory('Push-ups')">Push-ups</button>
+              <button class="pill" onclick="filterHistory('Squats')">Squats</button>
+            </div>
+
+            <!-- History Entries List -->
+            <div class="history-list" id="historyListContainer">
+              <!-- Dynamically populated from Room DB/localStorage -->
+            </div>
+
+            <div id="emptyHistoryNotice" class="empty-state" style="display:none;">
+              <span class="empty-icon">🏋️</span>
+              <h4>No workouts recorded yet</h4>
+              <p>Start a Push-up or Squat session to see your logs here!</p>
+              <button class="btn-accent-sm" onclick="startWorkout('PUSH_UP')">Start Push-ups</button>
+            </div>
+
+            <div style="height: 90px;"></div>
+          </div>
+        </section>
+
+        <!-- APK HUB TAB -->
+        <section id="tab-apk-hub" class="screen-view tab-content">
+          <div class="mobile-header">
+            <div>
+              <span class="greeting-sub">Android Release</span>
+              <h2 class="greeting-title">Mobile Installation</h2>
+            </div>
+          </div>
+
+          <div class="screen-scrollable">
+            <div class="apk-card">
+              <div class="apk-badge">Innovhacks 4.0 Release</div>
+              <h3 class="apk-title">FitGuru Mobile (Debug APK)</h3>
+              <p class="apk-desc">Innovhacks 4.0 on-device AI workout coach build with MediaPipe Vision & Wearable DataLayer integration.</p>
+
+              <div class="apk-meta-row">
+                <span class="apk-meta-tag">📦 Version 1.0</span>
+                <span class="apk-meta-tag">💾 66.9 MB</span>
+                <span class="apk-meta-tag">🤖 Android 8.0+</span>
+              </div>
+
+              <!-- Direct Download Link -->
+              <a href="/download-apk" class="btn-download-apk" download="FitGuru-Innovhacks4.0-debug.apk">
+                <span class="dl-icon">📥</span>
+                <div class="dl-text">
+                  <strong>Download FitGuru-debug.apk</strong>
+                  <span>Click to download directly (66.9 MB)</span>
+                </div>
+              </a>
+
+              <!-- QR Code Section -->
+              <div class="qr-box">
+                <h4>📱 Scan to Download on Phone</h4>
+                <p>Make sure your mobile phone is on the same Wi-Fi network:</p>
+                <div id="qrcode" class="qrcode-wrapper"></div>
+                <div class="mobile-lan-url" id="mobileLanUrl">http://...</div>
+              </div>
+
+              <!-- Installation Instructions -->
+              <div class="install-steps">
+                <h4>📋 How to Install on Android:</h4>
+                <ol>
+                  <li>Download <strong>FitGuru-debug.apk</strong> to your Android phone.</li>
+                  <li>Tap the downloaded file in your notification bar or Files app.</li>
+                  <li>If prompted, tap <em>Settings</em> and enable <strong>"Allow from this source"</strong>.</li>
+                  <li>Tap <strong>Install</strong> and launch <strong>FitGuru</strong>!</li>
+                </ol>
+              </div>
+            </div>
+
+            <div style="height: 90px;"></div>
+          </div>
+        </section>
+
+        <!-- BOTTOM NAVIGATION BAR -->
+        <nav class="bottom-nav-bar" id="bottomNav">
+          <button class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Dashboard</span>
+          </button>
+
+          <button class="nav-item" data-tab="workouts" onclick="switchTab('workouts')">
+            <span class="nav-icon">🏋️</span>
+            <span class="nav-label">Workouts</span>
+          </button>
+
+          <button class="nav-fab-btn" onclick="startWorkout('PUSH_UP')" title="Quick Start AI Coach">
+            <span class="fab-icon">⚡</span>
+          </button>
+
+          <button class="nav-item" data-tab="history" onclick="switchTab('history')">
+            <span class="nav-icon">📜</span>
+            <span class="nav-label">History</span>
+          </button>
+
+          <button class="nav-item" data-tab="profile" onclick="switchTab('profile')">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Profile</span>
+          </button>
+        </nav>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- Set Weekly Goal Modal -->
+  <div class="modal-backdrop" id="goalModal">
+    <div class="modal-card">
+      <h3 class="modal-title">Set Weekly Rep Goal</h3>
+      <p class="modal-desc">Enter your target total repetitions across push-ups and squats for this week.</p>
+      
+      <div class="input-group">
+        <label for="weeklyGoalInput">Target Repetitions:</label>
+        <input type="number" id="weeklyGoalInput" min="10" max="5000" value="200" placeholder="e.g. 200">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeGoalModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveGoalModal()">Save Goal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Name Modal -->
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal-card">
+      <h3 class="modal-title">Edit Profile</h3>
+      <p class="modal-desc">Set your name for personalized voice coaching greetings.</p>
+      
+      <div class="input-group">
+        <label for="profileNameInput">Your Name:</label>
+        <input type="text" id="profileNameInput" value="Athrava" placeholder="Enter name">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeProfileModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveProfileModal()">Save Name</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workout Summary Modal -->
+  <div class="modal-backdrop" id="summaryModal">
+    <div class="modal-card summary-card">
+      <div class="summary-badge">🏆 Workout Complete!</div>
+      <h3 class="modal-title" id="summaryTitle">Push-ups Session</h3>
+      <p class="modal-desc">Great effort! Your session has been stored in on-device database.</p>
+
+      <div class="summary-stats-grid">
+        <div class="summary-stat-box">
+          <span class="summary-num text-lime" id="summaryReps">15</span>
+          <span class="summary-lbl">Total Reps</span>
+        </div>
+        <div class="summary-stat-box">
+          <span class="summary-num" id="summaryScore">98%</span>
+          <span class="summary-lbl">Form Score</span>
+        </div>
+        <div class="summary-stat-box">
+          <span class="summary-num text-orange" id="summaryCalories">42</span>
+          <span class="summary-lbl">Est. Calories</span>
+        </div>
+        <div class="summary-stat-box">
+          <span class="summary-num" id="summaryAvgBpm">134</span>
+          <span class="summary-lbl">Avg Heart Rate</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary-full" onclick="closeSummaryModal()">Return to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
