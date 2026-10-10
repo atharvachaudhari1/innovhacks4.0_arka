@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import java.util.Date
 
-// Add a TypeConverter for the Date field
 class Converters {
     @androidx.room.TypeConverter
     fun fromTimestamp(value: Long?): Date? {
@@ -20,7 +19,7 @@ class Converters {
     }
 }
 
-@Database(entities = [WorkoutSession::class], version = 1, exportSchema = false)
+@Database(entities = [WorkoutSession::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -36,11 +35,12 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "workout_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }
         }
     }
 }
-

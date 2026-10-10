@@ -23,9 +23,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.Navigation
+import com.google.mediapipe.examples.poselandmarker.ElevenLabsService
 import com.google.mediapipe.examples.poselandmarker.MainViewModel
 import com.google.mediapipe.examples.poselandmarker.PoseLandmarkerHelper
 import com.google.mediapipe.examples.poselandmarker.R
+import com.google.mediapipe.examples.poselandmarker.SmartRestTimerBottomSheet
+import com.google.mediapipe.examples.poselandmarker.VoiceCommandListener
+import com.google.mediapipe.examples.poselandmarker.VoiceCommandManager
+import com.google.mediapipe.examples.poselandmarker.WorkoutSummaryBottomSheet
 import com.google.mediapipe.examples.poselandmarker.data.AppDatabase
 import com.google.mediapipe.examples.poselandmarker.data.WorkoutSession
 import com.google.mediapipe.examples.poselandmarker.databinding.FragmentCameraBinding
@@ -41,7 +46,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, TextToSpeech.OnInitListener {
+class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, TextToSpeech.OnInitListener, VoiceCommandListener {
 
     companion object {
         private const val TAG = "FitGuru Camera"
@@ -60,6 +65,8 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
     private var cameraFacing = CameraSelector.LENS_FACING_FRONT
     private lateinit var backgroundExecutor: ExecutorService
     private lateinit var textToSpeech: TextToSpeech
+    private lateinit var elevenLabsService: ElevenLabsService
+    private lateinit var voiceCommandManager: VoiceCommandManager
 
     private var currentWorkoutType: String = "SQUAT"
     private var repCount = 0
@@ -68,6 +75,10 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
     private var lastFeedbackTime = 0L
     private var isGenerativeAiEnabled = true
     private var isAiThinking = false
+    private var currentWeightKg = 0.0
+    private var currentHeartRateBpm = 0
+    private var lastMeasuredAngle = 0.0
+    private var lastFaultDetected = ""
 
     // Plank Hold Timer
     private var plankTimerHandler: Handler? = null
@@ -95,11 +106,17 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
                 }
             }
         }
+        if (this::voiceCommandManager.isInitialized) {
+            voiceCommandManager.startListening()
+        }
     }
 
     override fun onPause() {
         super.onPause()
         stopPlankTimer()
+        if (this::voiceCommandManager.isInitialized) {
+            voiceCommandManager.stopListening()
+        }
         if (this::poseLandmarkerHelper.isInitialized) {
             viewModel.setMinPoseDetectionConfidence(poseLandmarkerHelper.minPoseDetectionConfidence)
             viewModel.setMinPoseTrackingConfidence(poseLandmarkerHelper.minPoseTrackingConfidence)
@@ -113,6 +130,10 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
 
     override fun onDestroyView() {
         stopPlankTimer()
+        if (this::voiceCommandManager.isInitialized) {
+            voiceCommandManager.setListener(null)
+            voiceCommandManager.stopListening()
+        }
         _fragmentCameraBinding = null
         super.onDestroyView()
         if (this::heartRateReceiver.isInitialized) {
@@ -140,12 +161,19 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        elevenLabsService = ElevenLabsService.getInstance(requireContext())
+        voiceCommandManager = VoiceCommandManager.getInstance(requireContext())
+        voiceCommandManager.setListener(this)
+
         setupExerciseHeader()
+        updateCoachPersonaBadge()
+        updateWeightUI()
 
         heartRateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val bpm = intent?.getIntExtra("BPM_EXTRA", 0) ?: 0
                 if (_fragmentCameraBinding != null && bpm > 0) {
+                    currentHeartRateBpm = bpm
                     fragmentCameraBinding.heartRateText.text = "$bpm BPM"
                 }
             }
@@ -170,19 +198,32 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
 
         textToSpeech = TextToSpeech(requireContext(), this)
 
-        fragmentCameraBinding.generativeAiButton.text = "🤖 Generative AI (ON)"
         fragmentCameraBinding.finishWorkoutButton.setOnClickListener {
             finishAndSaveSession()
         }
 
-        fragmentCameraBinding.generativeAiButton.setOnClickListener {
-            isGenerativeAiEnabled = !isGenerativeAiEnabled
-            if (isGenerativeAiEnabled) {
-                Toast.makeText(requireContext(), "Generative AI Coach Activated!", Toast.LENGTH_SHORT).show()
-                fragmentCameraBinding.generativeAiButton.text = "🤖 Generative AI (ON)"
+        fragmentCameraBinding.smartRestButton.setOnClickListener {
+            showSmartRestTimer()
+        }
+
+        fragmentCameraBinding.btnWeightPlus.setOnClickListener {
+            currentWeightKg += 2.5
+            updateWeightUI()
+        }
+
+        fragmentCameraBinding.btnWeightMinus.setOnClickListener {
+            currentWeightKg = maxOf(0.0, currentWeightKg - 2.5)
+            updateWeightUI()
+        }
+
+        fragmentCameraBinding.voiceStatusPill.setOnClickListener {
+            voiceCommandManager.isEnabled = !voiceCommandManager.isEnabled
+            if (voiceCommandManager.isEnabled) {
+                voiceCommandManager.startListening()
+                Toast.makeText(requireContext(), "Voice Commands Activated", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Generative AI Coach Deactivated.", Toast.LENGTH_SHORT).show()
-                fragmentCameraBinding.generativeAiButton.text = "🤖 Generative AI (OFF)"
+                voiceCommandManager.stopListening()
+                Toast.makeText(requireContext(), "Voice Commands Deactivated", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -784,6 +825,9 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
     }
 
     private fun finishAndSaveSession() {
+        if (this::voiceCommandManager.isInitialized) {
+            voiceCommandManager.stopListening()
+        }
         val (exerciseName, finalReps, score) = if (currentWorkoutType == "PLANK") {
             val scorePct = if (plankSeconds > 0) ((plankGoodSeconds.toDouble() / plankSeconds) * 100).toInt().coerceIn(60, 100) else 100
             Triple("Plank Hold", plankSeconds, scorePct)
@@ -809,15 +853,22 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
             Triple(name, repCount, scorePct)
         }
 
-        val safeContext = context ?: return
-        val dao = AppDatabase.getDatabase(safeContext).workoutDao()
-        lifecycleScope.launch(Dispatchers.IO) {
-            dao.insert(WorkoutSession(date = Date(), exerciseType = exerciseName, reps = finalReps, score = score))
-            withContext(Dispatchers.Main) {
-                Toast.makeText(safeContext, "Saved $exerciseName: $finalReps reps (${score}% Accuracy)", Toast.LENGTH_LONG).show()
-                activity?.finish()
-            }
+        val estimatedCalories = (finalReps * 0.45 + (if (currentWeightKg > 0) currentWeightKg * 0.08 else 0.0)).toInt().coerceAtLeast(5)
+        val session = WorkoutSession(
+            date = Date(),
+            exerciseType = currentWorkoutType,
+            exerciseName = exerciseName,
+            reps = finalReps,
+            score = score,
+            calories = estimatedCalories,
+            avgHeartRate = currentHeartRateBpm,
+            weightKg = currentWeightKg
+        )
+
+        val summarySheet = WorkoutSummaryBottomSheet(session, lastMeasuredAngle, lastFaultDetected) {
+            activity?.finish()
         }
+        summarySheet.show(parentFragmentManager, "WorkoutSummarySheet")
     }
 
     private fun setUpCamera() {
@@ -871,7 +922,9 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
     }
 
     private fun speak(text: String) {
-        if (this::textToSpeech.isInitialized) {
+        if (this::elevenLabsService.isInitialized && elevenLabsService.isEnabled) {
+            elevenLabsService.speak(text)
+        } else if (this::textToSpeech.isInitialized) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
         }
     }
@@ -883,5 +936,83 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener, Text
 
     override fun onError(error: String, errorCode: Int) {
         activity?.runOnUiThread { Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show() }
+    }
+
+    // MARK: - VoiceCommandListener Callbacks
+    override fun onFinishSetCommand() {
+        activity?.runOnUiThread {
+            finishAndSaveSession()
+        }
+    }
+
+    override fun onSmartRestCommand() {
+        activity?.runOnUiThread {
+            showSmartRestTimer()
+        }
+    }
+
+    override fun onCoachHelpCommand() {
+        activity?.runOnUiThread {
+            val advice = "Keep your core braced and focus on a smooth, controlled 2-second negative."
+            speak(advice)
+            fragmentCameraBinding.aiFeedbackText.text = advice
+            fragmentCameraBinding.aiFeedbackText.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onSwitchExerciseCommand(newType: String) {
+        activity?.runOnUiThread {
+            currentWorkoutType = newType
+            repCount = 0
+            goodFormReps = 0
+            workoutState = "ready"
+            setupExerciseHeader()
+            speak("Switched to $newType. Let's go!")
+        }
+    }
+
+    override fun onAdjustWeightCommand(weightKg: Double) {
+        activity?.runOnUiThread {
+            currentWeightKg = weightKg
+            updateWeightUI()
+            speak("Weight set to ${weightKg.toInt()} kilograms.")
+        }
+    }
+
+    override fun onCommandRecognized(commandText: String) {
+        activity?.runOnUiThread {
+            fragmentCameraBinding.voiceStatusText.text = "Cmd: $commandText"
+            fragmentCameraBinding.voiceStatusPill.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onMicLevelChanged(levelPct: Float) {
+        activity?.runOnUiThread {
+            fragmentCameraBinding.voiceMicIcon.alpha = 0.4f + (levelPct * 0.6f)
+        }
+    }
+
+    override fun onListeningStateChanged(isListening: Boolean, status: String) {
+        activity?.runOnUiThread {
+            fragmentCameraBinding.voiceStatusText.text = status
+        }
+    }
+
+    private fun showSmartRestTimer() {
+        val timerSheet = SmartRestTimerBottomSheet(60, currentHeartRateBpm) {
+            speak("Rest complete! Ready for next set.")
+        }
+        timerSheet.show(parentFragmentManager, "SmartRestTimer")
+    }
+
+    private fun updateWeightUI() {
+        fragmentCameraBinding.weightDisplayText.text = if (currentWeightKg <= 0.0) "BW" else "${currentWeightKg.toInt()} kg"
+    }
+
+    private fun updateCoachPersonaBadge() {
+        if (this::elevenLabsService.isInitialized) {
+            val persona = elevenLabsService.selectedPersona
+            fragmentCameraBinding.coachPersonaBadge.text = "${persona.displayName} ${persona.icon}"
+        }
     }
 }

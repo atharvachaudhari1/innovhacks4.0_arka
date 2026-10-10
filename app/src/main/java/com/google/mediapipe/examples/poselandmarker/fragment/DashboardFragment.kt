@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.mediapipe.examples.poselandmarker.AnalyticsActivity
 import com.google.mediapipe.examples.poselandmarker.QuickWorkout
 import com.google.mediapipe.examples.poselandmarker.QuickWorkoutAdapter
 import com.google.mediapipe.examples.poselandmarker.R
@@ -227,6 +228,11 @@ class DashboardFragment : Fragment() {
             val intent = Intent(requireContext(), WorkoutActivity::class.java).apply {
                 putExtra("WORKOUT_TYPE", "PUSH_UP")
             }
+            startActivity(intent)
+        }
+
+        binding.cardAnalyticsShortcut.setOnClickListener {
+            val intent = Intent(requireContext(), AnalyticsActivity::class.java)
             startActivity(intent)
         }
 

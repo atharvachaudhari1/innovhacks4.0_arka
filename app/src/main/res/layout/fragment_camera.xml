@@ -20,6 +20,7 @@
 
     <!-- Top Overlay Header -->
     <LinearLayout
+        android:id="@+id/top_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -47,22 +48,49 @@
                 android:text="🏋️"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/exercise_title_text"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="FitGuru AI Coach"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/exercise_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Squats"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/coach_persona_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Coach Marcus 🔥"
+                    android:textColor="@color/accent_lime"
+                    android:textSize="11sp" />
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- Smart Rest Button -->
+        <Button
+            android:id="@+id/smart_rest_button"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="#27272A"
+            android:text="⏱️ Rest"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:cornerRadius="12dp" />
+
+        <!-- Finish Workout Button -->
         <Button
             android:id="@+id/finish_workout_button"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="8dp"
             android:backgroundTint="@color/accent_lime"
             android:text="Finish"
             android:textColor="@color/text_on_accent"
@@ -70,14 +98,46 @@
             app:cornerRadius="12dp" />
     </LinearLayout>
 
-    <!-- Stat Hud: Reps / Time + Heart Rate -->
+    <!-- Hands-Free Voice Status Banner (Pill) -->
+    <LinearLayout
+        android:id="@+id/voice_status_pill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_header"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:background="#D916161A"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/voice_mic_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎙️"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/voice_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="Voice: Ready"
+            android:textColor="@color/white"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <!-- Stat Hud: Reps / Time + Heart Rate + Weight -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/top_header"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="70dp"
         android:background="#A6121214"
         android:orientation="vertical"
         android:padding="12dp">
@@ -89,8 +149,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/ic_heart"
                 app:tint="@color/accent_red" />
 
@@ -101,7 +161,7 @@
                 android:layout_marginStart="6dp"
                 android:text="-- BPM"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -109,7 +169,7 @@
             android:id="@+id/rep_count_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:text="Reps: 0"
             android:textColor="@color/accent_lime"
             android:textSize="22sp"
@@ -123,21 +183,43 @@
             android:text="Angle: --°"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
-    </LinearLayout>
 
-    <!-- Bottom Generative AI Toggle Button -->
-    <Button
-        android:id="@+id/generativeAiButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:backgroundTint="#27272A"
-        android:text="🤖 Generative AI (OFF)"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:cornerRadius="12dp" />
+        <!-- Weight Lifted Adjuster -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_weight_minus"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="#27272A"
+                android:src="@drawable/ic_minus"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/weight_display_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:text="BW"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btn_weight_plus"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="#27272A"
+                android:src="@drawable/ic_plus"
+                app:tint="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/aiThinkingIndicator"
@@ -155,7 +237,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="24dp"
         android:background="#CC09090B"
         android:padding="14dp"
         android:textAlignment="center"

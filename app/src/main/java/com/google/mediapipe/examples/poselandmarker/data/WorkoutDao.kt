@@ -15,6 +15,12 @@ interface WorkoutDao {
     @Query("SELECT * FROM workout_history ORDER BY date DESC")
     fun getAllSessions(): Flow<List<WorkoutSession>>
 
-    @Query("SELECT * FROM workout_history WHERE date >= :startDate AND date <= :endDate")
+    @Query("SELECT * FROM workout_history WHERE date >= :startDate AND date <= :endDate ORDER BY date DESC")
     fun getSessionsForWeek(startDate: Date, endDate: Date): Flow<List<WorkoutSession>>
+
+    @Query("SELECT * FROM workout_history ORDER BY date DESC LIMIT :limit")
+    fun getRecentSessions(limit: Int): Flow<List<WorkoutSession>>
+
+    @Query("SELECT * FROM workout_history WHERE exerciseType = :type OR exerciseName = :type ORDER BY date DESC")
+    fun getSessionsByExercise(type: String): Flow<List<WorkoutSession>>
 }
