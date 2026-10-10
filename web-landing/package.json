@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "FitGuru marketing landing page for Innovhacks 4.0",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo static"
   },
   "engines": {
     "node": ">=18.0.0"
