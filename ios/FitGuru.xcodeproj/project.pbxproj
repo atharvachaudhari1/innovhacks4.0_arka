@@ -1,0 +1,324 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1A0000112800000100000001 /* FitGuruApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000102800000100000001 /* FitGuruApp.swift */; };
+		1A0000132800000100000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000122800000100000001 /* ContentView.swift */; };
+		1A0000152800000100000001 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000142800000100000001 /* WebView.swift */; };
+		1A0000312800000100000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000302800000100000001 /* Theme.swift */; };
+		1A0000332800000100000001 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000322800000100000001 /* Models.swift */; };
+		1A0000352800000100000001 /* GymCatalogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000342800000100000001 /* GymCatalogData.swift */; };
+		1A0000372800000100000001 /* PoseEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000362800000100000001 /* PoseEstimator.swift */; };
+		1A0000392800000100000001 /* PoseCoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000382800000100000001 /* PoseCoachView.swift */; };
+		1A00003B2800000100000001 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00003A2800000100000001 /* DashboardView.swift */; };
+		1A00003D2800000100000001 /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00003C2800000100000001 /* WorkoutsView.swift */; };
+		1A00003F2800000100000001 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00003E2800000100000001 /* ProfileView.swift */; };
+		1A0000412800000100000001 /* EquipmentGuideSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000402800000100000001 /* EquipmentGuideSheet.swift */; };
+		1A0000432800000100000001 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000422800000100000001 /* HistoryView.swift */; };
+		1A0000452800000100000001 /* ElevenLabsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000442800000100000001 /* ElevenLabsService.swift */; };
+		1A0000472800000100000001 /* VoiceSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000462800000100000001 /* VoiceSettingsSheet.swift */; };
+		1A0000492800000100000001 /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000482800000100000001 /* GeminiService.swift */; };
+		1A00004B2800000100000001 /* WorkoutSummarySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00004A2800000100000001 /* WorkoutSummarySheet.swift */; };
+		1A0000172800000100000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0000162800000100000001 /* Assets.xcassets */; };
+		1A0000192800000100000001 /* Web in Resources */ = {isa = PBXBuildFile; fileRef = 1A0000182800000100000001 /* Web */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1A0000052800000100000001 /* FitGuru.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitGuru.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A0000102800000100000001 /* FitGuruApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitGuruApp.swift; sourceTree = "<group>"; };
+		1A0000122800000100000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1A0000142800000100000001 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		1A0000302800000100000001 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		1A0000322800000100000001 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		1A0000342800000100000001 /* GymCatalogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymCatalogData.swift; sourceTree = "<group>"; };
+		1A0000362800000100000001 /* PoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseEstimator.swift; sourceTree = "<group>"; };
+		1A0000382800000100000001 /* PoseCoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseCoachView.swift; sourceTree = "<group>"; };
+		1A00003A2800000100000001 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		1A00003C2800000100000001 /* WorkoutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
+		1A00003E2800000100000001 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		1A0000402800000100000001 /* EquipmentGuideSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquipmentGuideSheet.swift; sourceTree = "<group>"; };
+		1A0000422800000100000001 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		1A0000442800000100000001 /* ElevenLabsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElevenLabsService.swift; sourceTree = "<group>"; };
+		1A0000462800000100000001 /* VoiceSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceSettingsSheet.swift; sourceTree = "<group>"; };
+		1A0000482800000100000001 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
+		1A00004A2800000100000001 /* WorkoutSummarySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummarySheet.swift; sourceTree = "<group>"; };
+		1A0000162800000100000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1A0000182800000100000001 /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
+		1A0000202800000100000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1A0000082800000100000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1A0000022800000100000001 = {
+			isa = PBXGroup;
+			children = (
+				1A0000032800000100000001 /* FitGuru */,
+				1A0000042800000100000001 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1A0000032800000100000001 /* FitGuru */ = {
+			isa = PBXGroup;
+			children = (
+				1A0000102800000100000001 /* FitGuruApp.swift */,
+				1A0000122800000100000001 /* ContentView.swift */,
+				1A0000302800000100000001 /* Theme.swift */,
+				1A0000322800000100000001 /* Models.swift */,
+				1A0000342800000100000001 /* GymCatalogData.swift */,
+				1A0000362800000100000001 /* PoseEstimator.swift */,
+				1A0000382800000100000001 /* PoseCoachView.swift */,
+				1A00003A2800000100000001 /* DashboardView.swift */,
+				1A00003C2800000100000001 /* WorkoutsView.swift */,
+				1A00003E2800000100000001 /* ProfileView.swift */,
+				1A0000402800000100000001 /* EquipmentGuideSheet.swift */,
+				1A0000422800000100000001 /* HistoryView.swift */,
+				1A0000442800000100000001 /* ElevenLabsService.swift */,
+				1A0000462800000100000001 /* VoiceSettingsSheet.swift */,
+				1A0000482800000100000001 /* GeminiService.swift */,
+				1A00004A2800000100000001 /* WorkoutSummarySheet.swift */,
+				1A0000142800000100000001 /* WebView.swift */,
+				1A0000162800000100000001 /* Assets.xcassets */,
+				1A0000182800000100000001 /* Web */,
+				1A0000202800000100000001 /* Info.plist */,
+			);
+			path = FitGuru;
+			sourceTree = "<group>";
+		};
+		1A0000042800000100000001 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1A0000052800000100000001 /* FitGuru.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1A0000062800000100000001 /* FitGuru */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A0000242800000100000001 /* Build configuration list for PBXNativeTarget "FitGuru" */;
+			buildPhases = (
+				1A0000072800000100000001 /* Sources */,
+				1A0000082800000100000001 /* Frameworks */,
+				1A0000092800000100000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FitGuru;
+			productName = FitGuru;
+			productReference = 1A0000052800000100000001 /* FitGuru.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1A0000012800000100000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					1A0000062800000100000001 = {
+						CreatedOnToolsVersion = 15.0;
+						DevelopmentTeam = QPW6FG23R7;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 1A0000212800000100000001 /* Build configuration list for PBXProject "FitGuru" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1A0000022800000100000001;
+			productRefGroup = 1A0000042800000100000001 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1A0000062800000100000001 /* FitGuru */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1A0000092800000100000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A0000172800000100000001 /* Assets.xcassets in Resources */,
+				1A0000192800000100000001 /* Web in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1A0000072800000100000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A0000112800000100000001 /* FitGuruApp.swift in Sources */,
+				1A0000132800000100000001 /* ContentView.swift in Sources */,
+				1A0000312800000100000001 /* Theme.swift in Sources */,
+				1A0000332800000100000001 /* Models.swift in Sources */,
+				1A0000352800000100000001 /* GymCatalogData.swift in Sources */,
+				1A0000372800000100000001 /* PoseEstimator.swift in Sources */,
+				1A0000392800000100000001 /* PoseCoachView.swift in Sources */,
+				1A00003B2800000100000001 /* DashboardView.swift in Sources */,
+				1A00003D2800000100000001 /* WorkoutsView.swift in Sources */,
+				1A00003F2800000100000001 /* ProfileView.swift in Sources */,
+				1A0000412800000100000001 /* EquipmentGuideSheet.swift in Sources */,
+				1A0000432800000100000001 /* HistoryView.swift in Sources */,
+				1A0000452800000100000001 /* ElevenLabsService.swift in Sources */,
+				1A0000472800000100000001 /* VoiceSettingsSheet.swift in Sources */,
+				1A0000492800000100000001 /* GeminiService.swift in Sources */,
+				1A00004B2800000100000001 /* WorkoutSummarySheet.swift in Sources */,
+				1A0000152800000100000001 /* WebView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1A0000222800000100000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1A0000232800000100000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		1A0000252800000100000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QPW6FG23R7;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FitGuru/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.innovhacks.fitguru;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1A0000262800000100000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QPW6FG23R7;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FitGuru/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.innovhacks.fitguru;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1A0000212800000100000001 /* Build configuration list for PBXProject "FitGuru" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A0000222800000100000001 /* Debug */,
+				1A0000232800000100000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A0000242800000100000001 /* Build configuration list for PBXNativeTarget "FitGuru" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A0000252800000100000001 /* Debug */,
+				1A0000262800000100000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 1A0000012800000100000001 /* Project object */;
+}
