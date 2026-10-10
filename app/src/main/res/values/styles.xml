@@ -1,0 +1,39 @@
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_lime</item>
+        <item name="colorPrimaryVariant">@color/accent_lime</item>
+        <item name="colorOnPrimary">@color/text_on_accent</item>
+        <item name="colorSecondary">@color/accent_purple</item>
+        <item name="colorSecondaryVariant">@color/accent_purple</item>
+        <item name="colorOnSecondary">@color/text_on_accent</item>
+        <item name="android:statusBarColor">@color/app_background</item>
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+    
+    <style name="AchievementIcon">
+        <item name="android:layout_width">64dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:background">@drawable/achievement_background</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="AchievementIcon.Unlocked">
+        <item name="android:backgroundTint">@color/accent_lime</item>
+        <item name="tint">@color/text_on_accent</item>
+    </style>
+
+    <style name="AchievementIcon.Locked">
+        <item name="android:backgroundTint">@color/card_background</item>
+        <item name="tint">@color/text_secondary</item>
+    </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/app_background</item>
+    
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_splash</item>
+    
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+</resources>

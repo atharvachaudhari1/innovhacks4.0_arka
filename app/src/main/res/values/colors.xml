@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Dark Theme Colors -->
+    <color name="app_background">#0A0A0A</color>
+    <color name="card_background">#18181B</color>
+    <color name="card_surface">#18181B</color>
+    <color name="card_stroke">#27272A</color>
+
+    <!-- Brand Accents -->
+    <color name="accent_lime">#A4FF2E</color>
+    <color name="lime_accent">#A4FF2E</color>
+    <color name="accent_purple">#D0BCFF</color>
+    <color name="accent_cyan">#00E5FF</color>
+    <color name="accent_orange">#FF7A00</color>
+    <color name="accent_red">#FF453A</color>
+
+    <color name="badge_bg">#1E2514</color>
+    <color name="badge_border">#384E1C</color>
+
+    <!-- Typography -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+    <color name="text_on_accent">#050505</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="mp_color_primary">#007F8B</color>
+</resources>
